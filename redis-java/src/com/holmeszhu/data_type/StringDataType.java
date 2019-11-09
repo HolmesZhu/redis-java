@@ -8,15 +8,30 @@ public class StringDataType extends CommonDataType {
 
     /**
      * @param key
-     * @param value
+     * @return 判断这个key是否属于string类型的  前提是key一定存在
+     */
+    public boolean stringDataType(String key) {
+        return redisMap.get(key) instanceof String;
+    }
+
+
+    /**
+     * @param key
+     * @param value 如果 key 已经持有其他值， SET 就覆写旧值， 无视类型。
      */
     public String set(String key, String value) {
         redisMap.put(key, value);
         return "OK";
     }
 
+    /**
+     * @param key
+     * @param value
+     * @return 在key不存在情况下 赋值
+     * key已经存在  返回0   不管这个Key是不是string  不存在返回1   key不合法返回-1
+     */
     public int setNx(String key, String value) {
-        if (redisMap.containsKey(key)) {
+        if (exists(key)) {
             return 0;
         } else {
             redisMap.put(key, value);
@@ -35,11 +50,10 @@ public class StringDataType extends CommonDataType {
         set(key, value);
         pExpire(key, milliseconds);
         return "OK";
-
     }
 
     public String setXX(String key, String value) {
-        if (redisMap.containsKey(key)) {
+        if (exists(key)) {
             redisMap.put(key, value);
             return "OK";
         }
@@ -53,18 +67,24 @@ public class StringDataType extends CommonDataType {
      * 属于string 类型时 从map中返回值   不存在返回的是null
      */
     public String get(String key) {
-        if (!stringDataType(key)) {
-            return "ERROR";
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                return "ERROR";
+            }
+            return (String) redisMap.get(key);
         }
-        return (String) redisMap.get(key);
+        return null;
     }
 
 
     public String getSet(String key, String value) {
-        if (redisMap.containsKey(key)) {
-            String result = get(key);
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                return "ERROR";
+            }
+            String oldValue = get(key);
             set(key, value);
-            return result;
+            return oldValue;
         } else {
             set(key, value);
             return null;
@@ -72,19 +92,58 @@ public class StringDataType extends CommonDataType {
     }
 
 
-    public boolean stringDataType(String key) {
-        Object value = redisMap.get(key);
-        if (value != null) {
-            if (value instanceof String) {
-                return true;
+    public int strLen(String key) {
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                return -1;
             }
+            return String.valueOf(redisMap.get(key)).length();
         }
-        return false;
+        return 0;
     }
 
-//    public long strLen(String key) {
-//        String value = get(key);
-//    }
+
+    public int append(String key, String value) {
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                return -1;
+            }
+            String newValue = get(key) + value;
+            set(key, newValue);
+            return strLen(key);
+        }
+        set(key, value);
+        return strLen(key);
+
+    }
+
+    public static boolean isValidLong(String key) {
+        try {
+            long value = Long.parseLong(key);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public int incr(String key) {
+
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                return -1;
+            }
+            String value = get(key);
+            if (isValidLong(value)) {
+                long newValue = Long.valueOf(value) + 1;
+                set(key, String.valueOf(newValue));
+            } else {
+                return -1;
+            }
+        }
+        set(key, "1");
+        return 1;
+
+    }
 
 
     public void mSet(List<Map.Entry<String, String>> entryList) {

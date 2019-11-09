@@ -19,11 +19,7 @@ public class Test {
         while (it.hasNext()) {
             Map.Entry<String, Object> entry = it.next();
             String key = entry.getKey();
-            Object object = entry.getValue();
-            if (object instanceof String){
-                System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
-            }
-
+            System.out.println(entry.getValue() instanceof String);
 
         }
 
