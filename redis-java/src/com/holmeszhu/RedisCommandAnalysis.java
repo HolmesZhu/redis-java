@@ -1,8 +1,6 @@
 package com.holmeszhu;
 
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +17,8 @@ public class RedisCommandAnalysis {
         //string
         firstCommandSet.add("set");
         firstCommandSet.add("get");
+
+        firstCommandSet.add("psetex");
 
         firstCommandSet.add("mset");
         firstCommandSet.add("mget");
@@ -88,42 +88,31 @@ public class RedisCommandAnalysis {
     }
 
 
+
     //截取命令  根据首个命令单词  也就是操作来判断调用什么方法
 
     public static void commandAnalysis(String s) throws Exception {
         String[] ss = s.split("\\s+");
         if (firstCommandSet.contains(ss[0])) {
-
-            if (ss[0].equals("set")) {
-                if (ss.length == 3) {
-
-
-                } else if (ss.length == 4) {
-
-
-                } else if (ss.length == 5) {
-
-                }
-            }
-
-//            String methodName = CommandMethodEnum.getMethodNameByCommand(ss[0]);
-//            if (methodName != null) {
-//                StringStruct stringStruct = new StringStruct();
-//
-//                Method method = stringStruct.getClass().getMethod(methodName, Class.forName("java.lang.String"), String.class);
-//                method.invoke(stringStruct, "key1", "test");
-//
-//                HashMap<String, String> hashMap = stringStruct.getMap();
-//
-//                System.out.println(hashMap.get("key1"));
-//
-//            }
+            RedisCommandOperate redisCommandOperate = RedisCommandOperate.getSingleton();
+            redisCommandOperate.parsingRedisCommand(ss);
         }
 
     }
 
+    public static void x(String[] ss) {
+        ss[0] = "123";
+    }
 
     public static void main(String[] args) throws Exception {
-        commandAnalysis("set 123 123");
+
+//        String[] ss = new String[]{"1", "2", "3"};
+//        x(ss);
+//        System.out.println(ss[0]);
+        commandAnalysis("set 123 121243");
+
+
+//        commandAnalysis("set 123 sdf nx");
+
     }
 }

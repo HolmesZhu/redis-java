@@ -24,6 +24,11 @@ public class StringDataType extends CommonDataType {
         return "OK";
     }
 
+    public String set(String key, String value, String nx){
+        redisMap.put(key, value);
+        return "HHH";
+    }
+
     /**
      * @param key
      * @param value
@@ -126,23 +131,41 @@ public class StringDataType extends CommonDataType {
         }
     }
 
-    public int incr(String key) {
-
+    public long incr(String key) {
         if (exists(key)) {
             if (!stringDataType(key)) {
                 return -1;
             }
             String value = get(key);
             if (isValidLong(value)) {
-                long newValue = Long.valueOf(value) + 1;
+                long newValue = Long.parseLong(value) + 1;
                 set(key, String.valueOf(newValue));
+                return newValue;
             } else {
-                return -1;
+                return -2;
             }
         }
         set(key, "1");
         return 1;
+    }
 
+
+    public long incrBy(String key, long increment) {
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                return -1;
+            }
+            String value = get(key);
+            if (isValidLong(value)) {
+                long newValue = Long.parseLong(value) + increment;
+                set(key, String.valueOf(newValue));
+                return newValue;
+            } else {
+                return -2;
+            }
+        }
+        set(key, String.valueOf(increment));
+        return increment;
     }
 
 

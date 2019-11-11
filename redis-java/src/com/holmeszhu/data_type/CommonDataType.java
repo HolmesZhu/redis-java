@@ -1,8 +1,6 @@
 package com.holmeszhu.data_type;
 
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class CommonDataType {
 
@@ -12,7 +10,7 @@ public class CommonDataType {
      * @param key
      * @return key是否存在 存在true 不存在false
      */
-    protected boolean exists(String key) {
+    public boolean exists(String key) {
         return redisMap.containsKey(key);
     }
 
