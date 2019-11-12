@@ -2,14 +2,14 @@ package com.holmeszhu;
 
 
 import com.holmeszhu.method.*;
-import com.holmeszhu.operator_method_enum.CommonEnum;
-import com.holmeszhu.operator_method_enum.ListEnum;
-import com.holmeszhu.operator_method_enum.StringEnum;
+import com.holmeszhu.operator_method_enum.*;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * redis命令相关处理操作
@@ -50,6 +50,10 @@ public class RedisCommandOperate {
         CommonEnum[] commonEnums = CommonEnum.values();
         StringEnum[] stringEnums = StringEnum.values();
         ListEnum[] listEnums = ListEnum.values();
+        HashEnum[] hashEnums = HashEnum.values();
+        SetEnum[] setEnums = SetEnum.values();
+        ZSetEnum[] zSetEnums = ZSetEnum.values();
+
 
         for (CommonEnum commonEnum : commonEnums) {
             if (commonEnum.getRedisOperate().equals(redisOperate)) {
@@ -69,6 +73,24 @@ public class RedisCommandOperate {
             }
         }
 
+        for (HashEnum hashEnum : hashEnums) {
+            if (hashEnum.getRedisOperate().equals(redisOperate)) {
+                return hashEnum.getMethodName();
+            }
+        }
+
+//        for (ListEnum listEnum : listEnums) {
+//            if (listEnum.getRedisOperate().equals(redisOperate)) {
+//                return listEnum.getMethodName();
+//            }
+//        }
+//
+//        for (ListEnum listEnum : listEnums) {
+//            if (listEnum.getRedisOperate().equals(redisOperate)) {
+//                return listEnum.getMethodName();
+//            }
+//        }
+
 
         return null;
     }
@@ -77,7 +99,6 @@ public class RedisCommandOperate {
     public void parsingRedisCommand(String[] operate) throws Exception {
 
         String methodName = getMethodNameByOperate(operate[0]);
-
 
         if (methodName != null) {
 

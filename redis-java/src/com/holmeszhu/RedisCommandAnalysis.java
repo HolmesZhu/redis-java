@@ -13,77 +13,133 @@ public class RedisCommandAnalysis {
     static {
 
         firstCommandSet.add("exists");
+        firstCommandSet.add("del");
 
         //string
         firstCommandSet.add("set");
-        firstCommandSet.add("get");
-
+        firstCommandSet.add("setnx");
+        firstCommandSet.add("setex");
         firstCommandSet.add("psetex");
 
-        firstCommandSet.add("mset");
-        firstCommandSet.add("mget");
-        firstCommandSet.add("del");
+        firstCommandSet.add("get");
+        firstCommandSet.add("getset");
+
+
+        firstCommandSet.add("strlen");
+        firstCommandSet.add("append");
+
+        firstCommandSet.add("setrange");
+        firstCommandSet.add("getrange");
 
         firstCommandSet.add("incr");
-        firstCommandSet.add("decr");
+        firstCommandSet.add("incrBy");
+        firstCommandSet.add("incrByFloat");
 
-        firstCommandSet.add("append");
-        firstCommandSet.add("strlen");
+        firstCommandSet.add("decr");
+        firstCommandSet.add("decrBy");
+
+        firstCommandSet.add("mset");
+        firstCommandSet.add("msetNx");
+
+        firstCommandSet.add("mget");
+
+
 
 
         //list
         firstCommandSet.add("lpush");
+        firstCommandSet.add("lpushx");
         firstCommandSet.add("rpush");
-        firstCommandSet.add("lrange");
-        firstCommandSet.add("linsert");
-        firstCommandSet.add("lindex");
-        firstCommandSet.add("llen");
-
+        firstCommandSet.add("rpushx");
         firstCommandSet.add("lpop");
         firstCommandSet.add("rpop");
-
-
+        firstCommandSet.add("rpoplpush");
         firstCommandSet.add("lrem");
-        firstCommandSet.add("ltrim");
-
+        firstCommandSet.add("llen");
+        firstCommandSet.add("lindex");
+        firstCommandSet.add("linsert");
         firstCommandSet.add("lset");
+        firstCommandSet.add("lrange");
+        firstCommandSet.add("ltrim");
+        firstCommandSet.add("blpop");
+        firstCommandSet.add("brpop");
+        firstCommandSet.add("brpoplpush");
+
 
 
         //hash
         firstCommandSet.add("hset");
+        firstCommandSet.add("hsetnx");
+
         firstCommandSet.add("hget");
+        firstCommandSet.add("hexists");
+
         firstCommandSet.add("hdel");
         firstCommandSet.add("hlen");
+        firstCommandSet.add("hstrlen");
+
+        firstCommandSet.add("hincrby");
+        firstCommandSet.add("hincrbyfloat");
+
         firstCommandSet.add("hmset");
         firstCommandSet.add("hmget");
 
 
-        firstCommandSet.add("hexists");
         firstCommandSet.add("hkeys");
         firstCommandSet.add("hvals");
         firstCommandSet.add("hgetall");
+        firstCommandSet.add("hscan");
 
 
         //set
         firstCommandSet.add("sadd");
-        firstCommandSet.add("srem");
-        firstCommandSet.add("scard");
         firstCommandSet.add("sismember");
-        firstCommandSet.add("srandmember");
         firstCommandSet.add("spop");
+        firstCommandSet.add("srandmember");
+        firstCommandSet.add("srem");
+        firstCommandSet.add("smove");
+        firstCommandSet.add("scard");
         firstCommandSet.add("smembers");
+        firstCommandSet.add("sscan");
+        firstCommandSet.add("sinter");
+        firstCommandSet.add("sinterstore");
+        firstCommandSet.add("sunion");
+        firstCommandSet.add("sunionstore");
+        firstCommandSet.add("sdiff");
+        firstCommandSet.add("sdiffstore");
+
 
         //zset
         firstCommandSet.add("zadd");
-        firstCommandSet.add("zrem");
-        firstCommandSet.add("zcard");
         firstCommandSet.add("zscore");
-        firstCommandSet.add("zrank");
-        firstCommandSet.add("zrange");
-        firstCommandSet.add("zrevrange");
-        firstCommandSet.add("zrangebyscore");
+        firstCommandSet.add("zincrby");
+        firstCommandSet.add("zcard");
+
 
         firstCommandSet.add("zcount");
+        firstCommandSet.add("zrange");
+        firstCommandSet.add("zrevrange");
+
+        firstCommandSet.add("zrangebyscore");
+        firstCommandSet.add("zrevrangebyscore");
+
+        firstCommandSet.add("zrank");
+        firstCommandSet.add("zrevrank");
+
+
+        firstCommandSet.add("zrem");
+        firstCommandSet.add("zremrangebyrank");
+
+        firstCommandSet.add("zremrangebyscore");
+
+        firstCommandSet.add("zrangebylex");
+
+        firstCommandSet.add("zlexcount");
+        firstCommandSet.add("zremrangebylex");
+        firstCommandSet.add("zscan");
+
+        firstCommandSet.add("zunionstore");
+        firstCommandSet.add("zinterstore");
 
     }
 

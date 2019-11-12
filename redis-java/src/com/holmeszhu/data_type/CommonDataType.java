@@ -1,10 +1,12 @@
 package com.holmeszhu.data_type;
 
 import java.util.HashMap;
+import java.util.Map;
+
 
 public class CommonDataType {
 
-    protected HashMap<String, Object> redisMap = new HashMap<>();
+    protected Map<String, Object> redisMap = new HashMap<>();
 
     /**
      * @param key

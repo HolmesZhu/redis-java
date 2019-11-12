@@ -1,6 +1,7 @@
 package com.holmeszhu.test;
 
 import com.holmeszhu.data_type.StringDataType;
+import com.holmeszhu.method.StringMethod;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
