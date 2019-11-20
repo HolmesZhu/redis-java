@@ -24,7 +24,7 @@ public class StringDataType extends CommonDataType {
         return "OK";
     }
 
-    public String set(String key, String value, String nx){
+    public String set(String key, String value, String nx) {
         redisMap.put(key, value);
         return "HHH";
     }
@@ -121,6 +121,52 @@ public class StringDataType extends CommonDataType {
         return strLen(key);
 
     }
+
+
+    public long setRange(String key, int offset, String value) {
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                return -1;
+            }
+            String str = get(key);
+            if (str.length() < offset) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < offset; i++) {
+                    sb.append(" ");
+                }
+                String blankString = sb.toString();
+                String s = str + blankString + value;
+                return s.length();
+            } else {
+                String s = str.substring(0, offset) + value;
+                return s.length();
+            }
+        }
+        set(key, value);
+        return strLen(key);
+    }
+
+    public String getRange(String key, int start, int end) {
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                return "ERROR";
+            }
+            String str = get(key);
+            if (start < end) {
+
+                if (start > 0) {
+                    if (end >= str.length()) {
+                        return str;
+                    }
+                    return str.substring(start, end);
+                }
+                return str.substring(start - str.length(), end - str.length());
+            }
+        }
+        return null;
+
+    }
+
 
     public static boolean isValidLong(String key) {
         try {
