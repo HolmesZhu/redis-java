@@ -50,19 +50,24 @@ public class Test {
 //        System.out.println(map.get("3") instanceof Map);
 
 
-        Class[] classes = new Class[3];
-        Arrays.fill(classes, String.class);
+//        Class[] classes = new Class[3];
+//        Arrays.fill(classes, String.class);
+//
+//        StringDataType stringDataType = new StringDataType();
+//
+//        Method[] methods = stringDataType.getClass().getMethods();
+//
+//        for (Method method : methods) {
+//            if (method.getName().equals("set") && Arrays.equals(method.getParameterTypes(), classes)) {
+//                System.out.println(method.invoke(stringDataType, "1234", "12dsg344", "ahjd"));
+//            }
+//        }
+//        System.out.println(stringDataType.get("1234"));
 
-        StringDataType stringDataType = new StringDataType();
-
-        Method[] methods = stringDataType.getClass().getMethods();
-
-        for (Method method : methods) {
-            if (method.getName().equals("set") && Arrays.equals(method.getParameterTypes(), classes)) {
-                System.out.println(method.invoke(stringDataType, "1234", "12dsg344", "ahjd"));
-            }
-        }
-        System.out.println(stringDataType.get("1234"));
-
+        String s = "abcde";
+        System.out.println(s.substring(0, 5));
+        System.out.println(Double.parseDouble("5"));
+        double x = 3;
+        System.out.println(String.valueOf(x));
     }
 }
