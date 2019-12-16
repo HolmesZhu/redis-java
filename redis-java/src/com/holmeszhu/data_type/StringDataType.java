@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.holmeszhu.constant.BaseResultCodeEnum.DATA_TYPE_ERROR;
+import static com.holmeszhu.constant.BaseResultCodeEnum.*;
 
 public class StringDataType extends CommonDataType {
 
@@ -280,8 +280,8 @@ public class StringDataType extends CommonDataType {
      * 如果键 key 不存在， 那么它的值会先被初始化为 0 ， 再incr
      * 如果键 key 储存的值不能被解释为数字， 那么 INCR 命令将返回-2。
      */
-    public BaseResult<String> incr(String key) {
-        BaseResult<String> result = new BaseResult<>();
+    public BaseResult<Integer> incr(String key) {
+        BaseResult<Integer> result = new BaseResult<>();
         if (exists(key)) {
             if (!stringDataType(key)) {
                 result.setBaseResultCodeEnum(DATA_TYPE_ERROR);
@@ -291,15 +291,15 @@ public class StringDataType extends CommonDataType {
             if (isValidInt(value)) {
                 int newValue = Integer.parseInt(value) + 1;
                 set(key, String.valueOf(newValue));
-                result.setResult(String.valueOf(newValue));
+                result.setResult(newValue);
                 return result;
             } else {
-                result.setResult("");
+                result.setBaseResultCodeEnum(NOT_NUMBER_TYPE_ERROR);
                 return result;
             }
         }
         set(key, "1");
-        result.setResult("1");
+        result.setResult(1);
         return result;
     }
 
@@ -311,22 +311,27 @@ public class StringDataType extends CommonDataType {
      * 如果键 key 不存在， 那么键 key 的值会先被初始化为 0 ， 然后再执行 INCRBY 命令。
      * 如果键 key 储存的值不能被解释为数字， 那么 INCR 命令将返回一个错误。
      */
-    public int incrBy(String key, int increment) {
+    public BaseResult<Integer> incrBy(String key, int increment) {
+        BaseResult<Integer> result = new BaseResult<>();
         if (exists(key)) {
             if (!stringDataType(key)) {
-                return -1;
+                result.setBaseResultCodeEnum(DATA_TYPE_ERROR);
+                return result;
             }
             String value = get(key);
             if (isValidInt(value)) {
                 int newValue = Integer.parseInt(value) + increment;
                 set(key, String.valueOf(newValue));
-                return newValue;
+                result.setResult(newValue);
+                return result;
             } else {
-                return -2;
+                result.setBaseResultCodeEnum(NOT_NUMBER_TYPE_ERROR);
+                return result;
             }
         }
         set(key, String.valueOf(increment));
-        return increment;
+        result.setResult(increment);
+        return result;
     }
 
     /**
@@ -337,73 +342,142 @@ public class StringDataType extends CommonDataType {
      * 如果键 key 不存在， 那么 INCRBYFLOAT 会先将键 key 的值设为 0 ， 然后再执行加法操作。
      * 如果命令执行成功， 那么键 key 的值会被更新为执行加法计算之后的新值， 并且新值会以字符串的形式返回给调用者。
      */
-    public double incrByFloat(String key, double increment) {
-
+    public BaseResult<Double> incrByFloat(String key, double increment) {
+        BaseResult<Double> result = new BaseResult<>();
         if (exists(key)) {
             if (!stringDataType(key)) {
-                return -1;
+                result.setBaseResultCodeEnum(DATA_TYPE_ERROR);
+                return result;
             }
             String value = get(key);
             if (isValidDouble(value)) {
                 double newValue = Double.parseDouble(value) + increment;
                 set(key, String.valueOf(newValue));
-                return newValue;
+                result.setResult(newValue);
+                return result;
             } else {
-                return -2;
+                result.setBaseResultCodeEnum(NOT_NUMBER_TYPE_ERROR);
+                return result;
             }
         }
         set(key, String.valueOf(increment));
-        return increment;
+        result.setResult(increment);
+        return result;
     }
 
 
     /**
-     *
      * @param key
      * @return
-     * @description
-     *
+     * @description 如果键 key 不存在， 那么键 key 的值会先被初始化为 0 ， 然后再执行 DECR 操作。
+     * 如果键 key 储存的值不能被解释为数字， 那么 DECR 命令将返回一个错误。
      */
-    public int decr(String key) {
+    public BaseResult<Integer> decr(String key) {
+        BaseResult<Integer> result = new BaseResult<>();
         if (exists(key)) {
             if (!stringDataType(key)) {
-                return -1;
+                result.setBaseResultCodeEnum(DATA_TYPE_ERROR);
+                return result;
             }
             String value = get(key);
             if (isValidInt(value)) {
                 int newValue = Integer.parseInt(value) - 1;
                 set(key, String.valueOf(newValue));
-                return newValue;
+                result.setResult(newValue);
+                return result;
             } else {
-                return -2;
+                result.setBaseResultCodeEnum(NOT_NUMBER_TYPE_ERROR);
+                return result;
             }
 
         }
-        set(key, "1");
-        return 1;
+        set(key, "-1");
+        result.setResult(-1);
+        return result;
     }
 
-//    public int decrBy(String ke, int increment) {
-////
-////    }
+
+    /**
+     * @param key
+     * @param increment
+     * @return
+     * @description 将键 key 储存的整数值减去减量 decrement 。
+     * 如果键 key 不存在， 那么键 key 的值会先被初始化为 0 ， 然后再执行 DECRBY 命令。
+     * 如果键 key 储存的值不能被解释为数字， 那么 DECRBY 命令将返回一个错误。
+     */
+    public BaseResult<Integer> decrBy(String key, int increment) {
+        BaseResult<Integer> result = new BaseResult<>();
+        if (exists(key)) {
+            if (!stringDataType(key)) {
+                result.setBaseResultCodeEnum(DATA_TYPE_ERROR);
+                return result;
+            }
+            String value = get(key);
+            if (isValidInt(value)) {
+                int newValue = Integer.parseInt(value) - increment;
+                set(key, String.valueOf(newValue));
+                result.setResult(newValue);
+                return result;
+            } else {
+                result.setBaseResultCodeEnum(NOT_NUMBER_TYPE_ERROR);
+                return result;
+            }
+
+        }
+        set(key, String.valueOf(-increment));
+        result.setResult(-increment);
+        return result;
+    }
 
 
-    public void mSet(List<Map.Entry<String, String>> entryList) {
+    /**
+     * @param entryList
+     * @description
+     * 如果某个给定键已经存在， 那么 MSET 将使用新值去覆盖旧值， 如果这不是你所希望的效果，
+     * 请考虑使用 MSETNX 命令， 这个命令只会在所有给定键都不存在的情况下进行设置。
+     * MSET 是一个原子性(atomic)操作， 所有给定键都会在同一时间内被设置， 不会出现某些键被设置了但是另一些键没有被设置的情况。
+     */
+    public String mSet(List<Map.Entry<String, String>> entryList) {
         for (Map.Entry<String, String> entry : entryList) {
             redisMap.put(entry.getKey(), entry.getValue());
         }
+        return "OK";
+    }
+
+    /**
+     *
+     * @param entryList
+     * @return
+     */
+    public BaseResult<Integer> mSetNx(List<Map.Entry<String, String>> entryList) {
+        BaseResult<Integer> result = new BaseResult<>();
+        //先检测是否有key存在
+        for (Map.Entry<String, String> entry : entryList) {
+             if(exists(entry.getKey())){
+                 result.setResult(0);
+                 return result;
+             }
+        }
+        for (Map.Entry<String, String> entry : entryList) {
+            redisMap.put(entry.getKey(), entry.getValue());
+        }
+        result.setResult(1);
+        return result;
     }
 
 
+    /**
+     * @param keys
+     * @return
+     * 返回给定的一个或多个字符串键的值。
+     * 如果给定的字符串键里面， 有某个键不存在， 那么返回null。
+     */
     public List<String> mGet(List<String> keys) {
-
         List<String> values = new ArrayList<>();
-
         for (String key : keys) {
             values.add(get(key));
         }
         return values;
     }
-
 
 }

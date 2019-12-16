@@ -3,7 +3,8 @@ package com.holmeszhu.constant;
 public enum BaseResultCodeEnum {
 
     SUCCESS(0, "成功"),
-    DATA_TYPE_ERROR(1, "数据类型错误");
+    DATA_TYPE_ERROR(1, "数据类型异常"),
+    NOT_NUMBER_TYPE_ERROR(2,"不是数字类型异常");
 
 
     int code;
