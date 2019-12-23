@@ -4,7 +4,10 @@ public enum BaseResultCodeEnum {
 
     SUCCESS(0, "成功"),
     DATA_TYPE_ERROR(1, "数据类型异常"),
-    NOT_NUMBER_TYPE_ERROR(2,"不是数字类型异常");
+    NOT_NUMBER_TYPE_ERROR(2,"不是数字类型异常"),
+    NOT_EXISTS_KEY(3,"不存在这个key"),
+    ;
+
 
 
     int code;

@@ -1,6 +1,7 @@
 package com.holmeszhu.method;
 
 import com.holmeszhu.data_type.StringDataType;
+import com.holmeszhu.util.Utils;
 
 public class StringMethod {
 
@@ -25,21 +26,39 @@ public class StringMethod {
 
     private StringDataType stringDataType = new StringDataType();
 
-    public void set(String key, String value) {
-        System.out.println(stringDataType.set(key, value));
+    public String set(String key, String value) {
+        return stringDataType.set(key, value);
     }
 
-    public void set(String key, String value, String param) {
-        System.out.println(stringDataType.exists(key));
-        if (param.equals("nx")) {
-            System.out.println(stringDataType.setNx(key, value));
+    //这里的param是NX和XX两种情况
+    public String set(String key, String value, String param) {
+        String newParam = param.toLowerCase();
+        if (newParam.equals("nx")) {
+            return stringDataType.setNx(key, value);
+        } else if (newParam.equals("xx")) {
+            return stringDataType.setXX(key, value);
+        } else {
+            return "param is valid";
         }
     }
 
-    public void set(String key, String value, String param, String time) {
-        System.out.println(stringDataType.exists(key));
-        if (param.equals("nx")) {
-            System.out.println(stringDataType.setNx(key, value));
+    //这里的param是ex和px
+    public String set(String key, String value, String param, String time) {
+        String newParam = param.toLowerCase();
+        if (newParam.equals("ex")) {
+            if (Utils.isInteger(time)) {
+                return stringDataType.setEx(key, Integer.parseInt(time), value);
+            } else {
+                return "time is not int";
+            }
+        } else if (newParam.equals("px")) {
+            if (Utils.isInteger(time)) {
+                return stringDataType.pSetEx(key, Integer.parseInt(time), value);
+            } else {
+                return "time is not int";
+            }
+        } else {
+            return "param is valid";
         }
     }
 
