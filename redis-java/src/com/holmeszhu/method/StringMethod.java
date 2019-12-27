@@ -158,7 +158,45 @@ public class StringMethod {
         }
     }
 
-//    public int incr(String key){
-//        return stringDataType.incr(key);
-//    }
+    public String incr(String key) {
+        if (!stringDataType.exists(key)) {
+            stringDataType.set(key, "1");
+            return "1";
+        }
+        if (stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        return stringDataType.incr(key);
+    }
+
+    public String incrBy(String key, String increment) {
+        if (!stringDataType.exists(key)) {
+            stringDataType.set(key, increment);
+            return increment;
+        }
+        if (stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        if (Utils.isInteger(increment)) {
+            return stringDataType.incrBy(key, Integer.parseInt(increment));
+        } else {
+            return "increment is not int";
+        }
+    }
+
+    public String incrByFloat(String key, String increment) {
+        if (!stringDataType.exists(key)) {
+            stringDataType.set(key, increment);
+            return increment;
+        }
+        if (stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        if (Utils.isDouble(increment)) {
+            return stringDataType.incrByFloat(key, Double.parseDouble(increment));
+        } else {
+            return "increment is not double";
+        }
+    }
+
 }

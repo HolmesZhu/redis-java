@@ -1,5 +1,6 @@
 package com.holmeszhu.data_type;
 
+import com.holmeszhu.constant.CommonConstants;
 import com.holmeszhu.result.BaseResult;
 
 import java.util.ArrayList;
@@ -256,27 +257,15 @@ public class StringDataType extends CommonDataType {
      * 如果键 key 不存在， 那么它的值会先被初始化为 0 ， 再incr
      * 如果键 key 储存的值不能被解释为数字， 那么 INCR 命令将返回-2。
      */
-    public BaseResult<Integer> incr(String key) {
-        BaseResult<Integer> result = new BaseResult<>();
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                result.setBaseResultCodeEnum(DATA_TYPE_ERROR);
-                return result;
-            }
-            String value = get(key);
-            if (isValidInt(value)) {
-                int newValue = Integer.parseInt(value) + 1;
-                set(key, String.valueOf(newValue));
-                result.setResult(newValue);
-                return result;
-            } else {
-                result.setBaseResultCodeEnum(NOT_NUMBER_TYPE_ERROR);
-                return result;
-            }
+    public String incr(String key) {
+        String value = get(key);
+        if (isValidInt(value)) {
+            int newValue = Integer.parseInt(value) + 1;
+            set(key, String.valueOf(newValue));
+            return String.valueOf(newValue);
+        } else {
+            return CommonConstants.NOT_NUMBER_TYPE_ERROR;
         }
-        set(key, "1");
-        result.setResult(1);
-        return result;
     }
 
 
@@ -287,28 +276,17 @@ public class StringDataType extends CommonDataType {
      * 如果键 key 不存在， 那么键 key 的值会先被初始化为 0 ， 然后再执行 INCRBY 命令。
      * 如果键 key 储存的值不能被解释为数字， 那么 INCR 命令将返回一个错误。
      */
-    public BaseResult<Integer> incrBy(String key, int increment) {
-        BaseResult<Integer> result = new BaseResult<>();
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                result.setBaseResultCodeEnum(DATA_TYPE_ERROR);
-                return result;
-            }
-            String value = get(key);
-            if (isValidInt(value)) {
-                int newValue = Integer.parseInt(value) + increment;
-                set(key, String.valueOf(newValue));
-                result.setResult(newValue);
-                return result;
-            } else {
-                result.setBaseResultCodeEnum(NOT_NUMBER_TYPE_ERROR);
-                return result;
-            }
+    public String incrBy(String key, int increment) {
+        String value = get(key);
+        if (isValidInt(value)) {
+            int newValue = Integer.parseInt(value) + increment;
+            set(key, String.valueOf(newValue));
+            return String.valueOf(newValue);
+        } else {
+            return CommonConstants.NOT_NUMBER_TYPE_ERROR;
         }
-        set(key, String.valueOf(increment));
-        result.setResult(increment);
-        return result;
     }
+
 
     /**
      * @param key
@@ -318,27 +296,15 @@ public class StringDataType extends CommonDataType {
      * 如果键 key 不存在， 那么 INCRBYFLOAT 会先将键 key 的值设为 0 ， 然后再执行加法操作。
      * 如果命令执行成功， 那么键 key 的值会被更新为执行加法计算之后的新值， 并且新值会以字符串的形式返回给调用者。
      */
-    public BaseResult<Double> incrByFloat(String key, double increment) {
-        BaseResult<Double> result = new BaseResult<>();
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                result.setBaseResultCodeEnum(DATA_TYPE_ERROR);
-                return result;
-            }
-            String value = get(key);
-            if (isValidDouble(value)) {
-                double newValue = Double.parseDouble(value) + increment;
-                set(key, String.valueOf(newValue));
-                result.setResult(newValue);
-                return result;
-            } else {
-                result.setBaseResultCodeEnum(NOT_NUMBER_TYPE_ERROR);
-                return result;
-            }
+    public String incrByFloat(String key, double increment) {
+        String value = get(key);
+        if (isValidDouble(value)) {
+            double newValue = Double.parseDouble(value) + increment;
+            set(key, String.valueOf(newValue));
+            return String.valueOf(newValue);
+        } else {
+            return CommonConstants.NOT_NUMBER_TYPE_ERROR;
         }
-        set(key, String.valueOf(increment));
-        result.setResult(increment);
-        return result;
     }
 
 
