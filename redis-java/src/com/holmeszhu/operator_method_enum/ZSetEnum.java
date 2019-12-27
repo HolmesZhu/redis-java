@@ -17,13 +17,13 @@ public enum ZSetEnum {
     Z_REM_RANGE_BY_RANK("zremrangebyrank", "zRemRangeByRank"),
     Z_REM_RANGE_BY_SCORE("zremrangebyscore", "zRemRangeByScore"),
 
-    Z_RANGE_BY_LEX("get", "get"),
-    Z_LEX_COUNT("get", "get"),
-    Z_REM_RANGE_BY_LEX("get", "get"),
+    Z_RANGE_BY_LEX("zrangebylex", "zRangeByLex"),
+    Z_LEX_COUNT("zlexcount", "zLexCount"),
+    Z_REM_RANGE_BY_LEX("zremrangebylex", "zRemRangeByLex"),
 
-    Z_SCAN("get", "get"),
-    Z_UNION_STORE("get", "get"),
-    Z_INTER_STORE("get", "get"),
+    Z_SCAN("zscan", "zScan"),
+    Z_UNION_STORE("zunionstore", "zUnionStore"),
+    Z_INTER_STORE("zinterstore", "zInterStore"),
 
 
     ;

@@ -33,21 +33,6 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-//        test();
-
-//        Map<String, String> valueMap = new HashMap<>();
-//
-//        valueMap.put("1", "2");
-//
-//        HashMap<String, Object> map = new HashMap<>();
-//
-//        map.put("1", "2");
-//        map.put("2", 2);
-//        map.put("3", 5L);
-//        map.put("4", valueMap);
-//
-//
-//        System.out.println(map.get("3") instanceof Map);
 
 
 //        Class[] classes = new Class[3];
@@ -63,11 +48,20 @@ public class Test {
 //            }
 //        }
 //        System.out.println(stringDataType.get("1234"));
+//
+//        String s = "abcde";
+//        System.out.println(s.substring(0, 5));
+//        System.out.println(Double.parseDouble("5"));
+//        double x = 3;
+//        System.out.println(String.valueOf(x));
+//
+//        String s1 = null;
+//        System.out.println(s1.equals("OK"));
 
-        String s = "abcde";
-        System.out.println(s.substring(0, 5));
-        System.out.println(Double.parseDouble("5"));
-        double x = 3;
-        System.out.println(String.valueOf(x));
+
+
+        String s = null;
+        System.out.println(s);
+
     }
 }

@@ -8,6 +8,9 @@ import java.util.Map;
 
 import static com.holmeszhu.constant.BaseResultCodeEnum.*;
 
+/**
+ * 确保这一层除了set的部分方法别的Key都是存在并且是String类型的
+ */
 public class StringDataType extends CommonDataType {
 
     /**
@@ -15,7 +18,7 @@ public class StringDataType extends CommonDataType {
      * @return boolean
      * @description 判断这个键是否是string类型
      */
-    private boolean stringDataType(String key) {
+    public boolean stringDataType(String key) {
         return redisMap.get(key) instanceof String;
     }
 
@@ -100,13 +103,7 @@ public class StringDataType extends CommonDataType {
      * 如果键 key 不存在， 那么返回null ； 否则， 返回键 key 的值。
      */
     public String get(String key) {
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                return "ERROR";
-            }
-            return (String) redisMap.get(key);
-        }
-        return null;
+        return (String) redisMap.get(key);
     }
 
 
@@ -119,17 +116,9 @@ public class StringDataType extends CommonDataType {
      * 当键 key 存在但不是字符串类型时， 返回ERROR。
      */
     public String getSet(String key, String value) {
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                return "ERROR";
-            }
-            String oldValue = get(key);
-            set(key, value);
-            return oldValue;
-        } else {
-            set(key, value);
-            return null;
-        }
+        String oldValue = get(key);
+        set(key, value);
+        return oldValue;
     }
 
 
@@ -141,13 +130,7 @@ public class StringDataType extends CommonDataType {
      * 当 key 储存的不是字符串值时， 返回一个错误。
      */
     public int strLen(String key) {
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                return -1;
-            }
-            return String.valueOf(redisMap.get(key)).length();
-        }
-        return 0;
+        return get(key).length();
     }
 
 
@@ -159,15 +142,8 @@ public class StringDataType extends CommonDataType {
      * 如果 key 不存在， APPEND 就简单地将键 key 的值设为 value ， 就像执行 SET key value 一样。
      */
     public int append(String key, String value) {
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                return -1;
-            }
-            String newValue = get(key) + value;
-            set(key, newValue);
-            return strLen(key);
-        }
-        set(key, value);
+        String newValue = get(key) + value;
+        set(key, newValue);
         return strLen(key);
     }
 
@@ -432,8 +408,7 @@ public class StringDataType extends CommonDataType {
 
     /**
      * @param entryList
-     * @description
-     * 如果某个给定键已经存在， 那么 MSET 将使用新值去覆盖旧值， 如果这不是你所希望的效果，
+     * @description 如果某个给定键已经存在， 那么 MSET 将使用新值去覆盖旧值， 如果这不是你所希望的效果，
      * 请考虑使用 MSETNX 命令， 这个命令只会在所有给定键都不存在的情况下进行设置。
      * MSET 是一个原子性(atomic)操作， 所有给定键都会在同一时间内被设置， 不会出现某些键被设置了但是另一些键没有被设置的情况。
      */
@@ -445,7 +420,6 @@ public class StringDataType extends CommonDataType {
     }
 
     /**
-     *
      * @param entryList
      * @return
      */
@@ -453,10 +427,10 @@ public class StringDataType extends CommonDataType {
         BaseResult<Integer> result = new BaseResult<>();
         //先检测是否有key存在
         for (Map.Entry<String, String> entry : entryList) {
-             if(exists(entry.getKey())){
-                 result.setResult(0);
-                 return result;
-             }
+            if (exists(entry.getKey())) {
+                result.setResult(0);
+                return result;
+            }
         }
         for (Map.Entry<String, String> entry : entryList) {
             redisMap.put(entry.getKey(), entry.getValue());
@@ -468,8 +442,7 @@ public class StringDataType extends CommonDataType {
 
     /**
      * @param keys
-     * @return
-     * 返回给定的一个或多个字符串键的值。
+     * @return 返回给定的一个或多个字符串键的值。
      * 如果给定的字符串键里面， 有某个键不存在， 那么返回null。
      */
     public List<String> mGet(List<String> keys) {

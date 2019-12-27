@@ -2,11 +2,13 @@ package com.holmeszhu;
 
 
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 public class RedisCommandAnalysis {
 
 
+    //命令第一个单词set集合
     private static Set<String> firstCommandSet = new HashSet<>();
 
 
@@ -44,8 +46,6 @@ public class RedisCommandAnalysis {
         firstCommandSet.add("mget");
 
 
-
-
         //list
         firstCommandSet.add("lpush");
         firstCommandSet.add("lpushx");
@@ -64,7 +64,6 @@ public class RedisCommandAnalysis {
         firstCommandSet.add("blpop");
         firstCommandSet.add("brpop");
         firstCommandSet.add("brpoplpush");
-
 
 
         //hash
@@ -144,7 +143,6 @@ public class RedisCommandAnalysis {
     }
 
 
-
     //截取命令  根据首个命令单词  也就是操作来判断调用什么方法
 
     public static void commandAnalysis(String s) throws Exception {
@@ -162,13 +160,16 @@ public class RedisCommandAnalysis {
 
     public static void main(String[] args) throws Exception {
 
-//        String[] ss = new String[]{"1", "2", "3"};
-//        x(ss);
-//        System.out.println(ss[0]);
-        commandAnalysis("set 123 121243");
+        Scanner scanner = new Scanner(System.in);
+        String nextLine = scanner.nextLine();
+        int sum = 0;
 
+        while (nextLine != null && !nextLine.equals("")) {
+            commandAnalysis(nextLine);
+            nextLine = scanner.nextLine();
+        }
 
-//        commandAnalysis("set 123 sdf nx");
-
+//        commandAnalysis("set 123 121243");
+//        commandAnalysis("setnx 123 csdf");
     }
 }

@@ -24,9 +24,9 @@ public enum StringEnum {
     DECR_BY("decrby","decrBy"),
 
 
-    M_SET("mset", "mset"),
+    M_SET("mset", "mSet"),
     M_SET_NX("msetnx", "mSetNx"),
-    M_GET("mget", "mget"),
+    M_GET("mget", "mGet"),
 
     ;
 

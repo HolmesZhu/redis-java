@@ -1,8 +1,14 @@
 package com.holmeszhu.method;
 
+import com.holmeszhu.constant.CommonConstants;
 import com.holmeszhu.data_type.StringDataType;
 import com.holmeszhu.util.Utils;
 
+/**
+ * 我们将参数校验的逻辑放到这一层来处理
+ * 传入参数都是字符串  我们需要进行校验  看看key是否存在  或者是否是正确的类型
+ * 还有对应的参数是否能转化为数字类型
+ */
 public class StringMethod {
 
 
@@ -32,6 +38,7 @@ public class StringMethod {
 
     //这里的param是NX和XX两种情况
     public String set(String key, String value, String param) {
+        //先将参数字母全部变为小写
         String newParam = param.toLowerCase();
         if (newParam.equals("nx")) {
             return stringDataType.setNx(key, value);
@@ -46,14 +53,14 @@ public class StringMethod {
     public String set(String key, String value, String param, String time) {
         String newParam = param.toLowerCase();
         if (newParam.equals("ex")) {
-            if (Utils.isInteger(time)) {
-                return stringDataType.setEx(key, Integer.parseInt(time), value);
+            if (Utils.isLong(time)) {
+                return stringDataType.setEx(key, Long.parseLong(time), value);
             } else {
                 return "time is not int";
             }
         } else if (newParam.equals("px")) {
-            if (Utils.isInteger(time)) {
-                return stringDataType.pSetEx(key, Integer.parseInt(time), value);
+            if (Utils.isLong(time)) {
+                return stringDataType.pSetEx(key, Long.parseLong(time), value);
             } else {
                 return "time is not int";
             }
@@ -63,4 +70,95 @@ public class StringMethod {
     }
 
 
+    public int setNx(String key, String value) {
+        if (stringDataType.setNx(key, value) == null) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    public String setEx(String key, String seconds, String value) {
+        if (Utils.isLong(seconds)) {
+            return stringDataType.setEx(key, Long.parseLong(seconds), value);
+        } else {
+            return "time is not int";
+        }
+    }
+
+    public String pSetEx(String key, String milliseconds, String value) {
+        if (Utils.isLong(milliseconds)) {
+            return stringDataType.pSetEx(key, Long.parseLong(milliseconds), value);
+        } else {
+            return "time is not int";
+        }
+    }
+
+    public String get(String key) {
+        if (!stringDataType.exists(key)) {
+            return null;
+        }
+        if (stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        return stringDataType.get(key);
+    }
+
+    public String getSet(String key, String value) {
+        if (!stringDataType.exists(key)) {
+            set(key, value);
+            return null;
+        }
+        if (stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        return stringDataType.getSet(key, value);
+    }
+
+
+    public String strLen(String key) {
+        if (!stringDataType.exists(key)) {
+            return "0";
+        }
+        if (stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        return String.valueOf(stringDataType.strLen(key));
+    }
+
+
+    public String append(String key, String value) {
+        if (!stringDataType.exists(key)) {
+            stringDataType.set(key, value);
+            return String.valueOf(value.length());
+        }
+        if (stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        return String.valueOf(stringDataType.append(key, value));
+    }
+
+    public String setRange(String key, String offset, String value) {
+        if (Utils.isInteger(offset)) {
+            return String.valueOf(stringDataType.setRange(key, Integer.parseInt(offset), value));
+        } else {
+            return "offset is not integer.";
+        }
+    }
+
+    public String getRange(String key, String start, String end) {
+        if (Utils.isInteger(start)) {
+            if (Utils.isInteger(end)) {
+                return stringDataType.getRange(key, Integer.parseInt(start), Integer.parseInt(end));
+            } else {
+                return "end is not integer.";
+            }
+        } else {
+            return "start is not integer";
+        }
+    }
+
+//    public int incr(String key){
+//        return stringDataType.incr(key);
+//    }
 }
