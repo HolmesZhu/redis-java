@@ -36,57 +36,20 @@ public class StringMethod {
             String key = params[0];
             String value = params[1];
             System.out.println("执行到这里");
-            return set(key, value);
+            return stringDataType.set(key, value);
         } else if (params.length == 3) {
             String key = params[0];
             String value = params[1];
             String param = params[2];
-            return set(key, value, param);
+            return stringDataType.set(key, value, param);
         } else if (params.length == 4) {
             String key = params[0];
             String value = params[1];
             String param = params[2];
             String time = params[3];
-            return set(key, value, param, time);
+            return stringDataType.set(key, value, param, time);
         } else {
             return CommonConstants.INVALID_PARAMS;
-        }
-    }
-
-    public String set(String key, String value) {
-        return stringDataType.set(key, value);
-    }
-
-    //这里的param是NX和XX两种情况
-    public String set(String key, String value, String param) {
-        //先将参数字母全部变为小写
-        String newParam = param.toLowerCase();
-        if (newParam.equals("nx")) {
-            return stringDataType.setNx(key, value);
-        } else if (newParam.equals("xx")) {
-            return stringDataType.setXX(key, value);
-        } else {
-            return "param is valid";
-        }
-    }
-
-    //这里的param是ex和px
-    public String set(String key, String value, String param, String time) {
-        String newParam = param.toLowerCase();
-        if (newParam.equals("ex")) {
-            if (Utils.isLong(time)) {
-                return stringDataType.setEx(key, Long.parseLong(time), value);
-            } else {
-                return "time is not int";
-            }
-        } else if (newParam.equals("px")) {
-            if (Utils.isLong(time)) {
-                return stringDataType.pSetEx(key, Long.parseLong(time), value);
-            } else {
-                return "time is not int";
-            }
-        } else {
-            return "param is valid";
         }
     }
 
@@ -95,46 +58,50 @@ public class StringMethod {
         if (params.length == 2) {
             String key = params[0];
             String value = params[1];
-            return setNx(key, value);
-        }else {
+            return stringDataType.setNx(key, value);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String setEx(String[] params) {
+        if (params.length == 3) {
+            String key = params[0];
+            String seconds = params[1];
+            if (!Utils.isLong(seconds)) {
+                return "seconds is not number";
+            }
+            String value = params[2];
+            return stringDataType.setEx(key, Long.parseLong(seconds), value);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String pSetEx(String[] params) {
+        if (params.length == 3) {
+            String key = params[0];
+            String milliseconds = params[1];
+            if (!Utils.isLong(milliseconds)) {
+                return "milliseconds is not number";
+            }
+            String value = params[2];
+            return stringDataType.pSetEx(key, Long.parseLong(milliseconds), value);
+        } else {
             return CommonConstants.INVALID_PARAMS;
         }
     }
 
 
-    public String setNx(String key, String value) {
-        if (stringDataType.setNx(key, value) == null) {
-            return "0";
+    public String get(String[] params) {
+        if (params.length == 1) {
+            String key = params[0];
+            return stringDataType.get(key);
         } else {
-            return "1";
+            return CommonConstants.INVALID_PARAMS;
         }
     }
 
-    public String setEx(String key, String seconds, String value) {
-        if (Utils.isLong(seconds)) {
-            return stringDataType.setEx(key, Long.parseLong(seconds), value);
-        } else {
-            return "time is not int";
-        }
-    }
-
-    public String pSetEx(String key, String milliseconds, String value) {
-        if (Utils.isLong(milliseconds)) {
-            return stringDataType.pSetEx(key, Long.parseLong(milliseconds), value);
-        } else {
-            return "time is not int";
-        }
-    }
-
-    public String get(String key) {
-        if (!stringDataType.exists(key)) {
-            return null;
-        }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return stringDataType.get(key);
-    }
 
     public String getSet(String key, String value) {
         if (!stringDataType.exists(key)) {

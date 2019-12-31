@@ -25,6 +25,7 @@ public class StringDataType extends CommonDataType {
     }
 
 
+
     /**
      * @param key   键
      * @param value 值
@@ -38,6 +39,39 @@ public class StringDataType extends CommonDataType {
         return "OK";
     }
 
+    //这里的param是NX和XX两种情况
+    public String set(String key, String value, String param) {
+        //先将参数字母全部变为小写
+        String newParam = param.toLowerCase();
+        if (newParam.equals("nx")) {
+            return setNx(key, value);
+        } else if (newParam.equals("xx")) {
+            return setXX(key, value);
+        } else {
+            return "param is valid";
+        }
+    }
+
+    //这里的param是ex和px
+    public String set(String key, String value, String param, String time) {
+        String newParam = param.toLowerCase();
+        if (newParam.equals("ex")) {
+            if (Utils.isLong(time)) {
+                return setEx(key, Long.parseLong(time), value);
+            } else {
+                return "time is not int";
+            }
+        } else if (newParam.equals("px")) {
+            if (Utils.isLong(time)) {
+                return pSetEx(key, Long.parseLong(time), value);
+            } else {
+                return "time is not int";
+            }
+        } else {
+            return "param is valid";
+        }
+    }
+
     /**
      * @param key
      * @param value
@@ -47,10 +81,12 @@ public class StringDataType extends CommonDataType {
      */
     public String setNx(String key, String value) {
         if (exists(key)) {
-            return null;
+            return "0";
         }
-        return set(key, value);
+        set(key, value);
+        return "1";
     }
+
 
     /**
      * @param key
@@ -105,6 +141,12 @@ public class StringDataType extends CommonDataType {
      * 如果键 key 不存在， 那么返回null ； 否则， 返回键 key 的值。
      */
     public String get(String key) {
+        if (!exists(key)) {
+            return null;
+        }
+        if (!stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         return (String) redisMap.get(key);
     }
 
