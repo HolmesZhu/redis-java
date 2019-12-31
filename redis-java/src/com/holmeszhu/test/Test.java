@@ -2,6 +2,7 @@ package com.holmeszhu.test;
 
 import com.holmeszhu.data_type.StringDataType;
 import com.holmeszhu.method.StringMethod;
+import com.holmeszhu.util.Utils;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -31,8 +32,13 @@ public class Test {
 
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void test1(String[] ss) {
+        for (String s : ss) {
+            System.out.println(s);
+        }
+    }
 
+    public static void main(String[] args) throws Exception {
 
 
 //        Class[] classes = new Class[3];
@@ -59,9 +65,18 @@ public class Test {
 //        System.out.println(s1.equals("OK"));
 
 
+        System.out.println("1\n3");
 
-        String s = null;
-        System.out.println(s);
+        Test test = new Test();
+        Method[] methods = test.getClass().getMethods();
+        Class[] classes = new Class[1];
+        classes[0] = String[].class;
+        String[] ss = {"1", "2", "3"};
+        for (Method method : methods) {
+            if (method.getName().equals("test1") && Arrays.equals(method.getParameterTypes(), classes)) {
+                method.invoke(test, (Object) ss);
+            }
+        }
 
     }
 }

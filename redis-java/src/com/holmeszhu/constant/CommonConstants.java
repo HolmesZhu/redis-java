@@ -6,4 +6,9 @@ public interface CommonConstants {
 
     String NOT_NUMBER_TYPE_ERROR = "the value is not number";
 
+    String EMPTY_LIST = "the list is empty";
+
+    String EMPTY_KEY = "ERR no such key";
+
+    String INVALID_PARAMS = "params is invalid";
 }

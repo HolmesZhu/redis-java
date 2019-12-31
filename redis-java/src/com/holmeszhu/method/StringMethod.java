@@ -29,8 +29,29 @@ public class StringMethod {
         return stringMethod;
     }
 
-
     private StringDataType stringDataType = new StringDataType();
+
+    public String set(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String value = params[1];
+            System.out.println("执行到这里");
+            return set(key, value);
+        } else if (params.length == 3) {
+            String key = params[0];
+            String value = params[1];
+            String param = params[2];
+            return set(key, value, param);
+        } else if (params.length == 4) {
+            String key = params[0];
+            String value = params[1];
+            String param = params[2];
+            String time = params[3];
+            return set(key, value, param, time);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
 
     public String set(String key, String value) {
         return stringDataType.set(key, value);
@@ -70,11 +91,22 @@ public class StringMethod {
     }
 
 
-    public int setNx(String key, String value) {
+    public String setNx(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String value = params[1];
+            return setNx(key, value);
+        }else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+
+    public String setNx(String key, String value) {
         if (stringDataType.setNx(key, value) == null) {
-            return 0;
+            return "0";
         } else {
-            return 1;
+            return "1";
         }
     }
 
@@ -98,7 +130,7 @@ public class StringMethod {
         if (!stringDataType.exists(key)) {
             return null;
         }
-        if (stringDataType.stringDataType(key)) {
+        if (!stringDataType.stringDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
         return stringDataType.get(key);
@@ -106,10 +138,10 @@ public class StringMethod {
 
     public String getSet(String key, String value) {
         if (!stringDataType.exists(key)) {
-            set(key, value);
+//            set(key, value);
             return null;
         }
-        if (stringDataType.stringDataType(key)) {
+        if (!stringDataType.stringDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
         return stringDataType.getSet(key, value);
@@ -120,7 +152,7 @@ public class StringMethod {
         if (!stringDataType.exists(key)) {
             return "0";
         }
-        if (stringDataType.stringDataType(key)) {
+        if (!stringDataType.stringDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
         return String.valueOf(stringDataType.strLen(key));
@@ -132,7 +164,7 @@ public class StringMethod {
             stringDataType.set(key, value);
             return String.valueOf(value.length());
         }
-        if (stringDataType.stringDataType(key)) {
+        if (!stringDataType.stringDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
         return String.valueOf(stringDataType.append(key, value));
@@ -163,7 +195,7 @@ public class StringMethod {
             stringDataType.set(key, "1");
             return "1";
         }
-        if (stringDataType.stringDataType(key)) {
+        if (!stringDataType.stringDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
         return stringDataType.incr(key);
@@ -171,10 +203,14 @@ public class StringMethod {
 
     public String incrBy(String key, String increment) {
         if (!stringDataType.exists(key)) {
-            stringDataType.set(key, increment);
-            return increment;
+            if (Utils.isInteger(increment)) {
+                stringDataType.set(key, increment);
+                return increment;
+            } else {
+                return "increment is not int";
+            }
         }
-        if (stringDataType.stringDataType(key)) {
+        if (!stringDataType.stringDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
         if (Utils.isInteger(increment)) {
@@ -189,7 +225,7 @@ public class StringMethod {
             stringDataType.set(key, increment);
             return increment;
         }
-        if (stringDataType.stringDataType(key)) {
+        if (!stringDataType.stringDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
         if (Utils.isDouble(increment)) {
@@ -198,5 +234,40 @@ public class StringMethod {
             return "increment is not double";
         }
     }
+
+    public String decr(String key) {
+        if (!stringDataType.exists(key)) {
+            stringDataType.set(key, "-1");
+            return "-1";
+        }
+        if (!stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        return stringDataType.decr(key);
+    }
+
+    public String decrBy(String key, String increment) {
+        if (!stringDataType.exists(key)) {
+            if (Utils.isInteger(increment)) {
+                stringDataType.set(key, String.valueOf(-Integer.parseInt(increment)));
+                return increment;
+            } else {
+                return "increment is not int";
+            }
+        }
+        if (!stringDataType.stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        if (Utils.isInteger(increment)) {
+            return stringDataType.decrBy(key, Integer.parseInt(increment));
+        } else {
+            return "increment is not int";
+        }
+    }
+
+//    public String mSet(String key, String value) {
+//        stringDataType.mSet(key,value);
+//    }
+
 
 }

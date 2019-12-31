@@ -113,8 +113,8 @@ public class RedisCommandOperate {
         if (methodName != null) {
 
             // classes 作为反射的参数  是一个Class类型的数组  存放的都是 String 类型
-            Class[] classes = new Class[operate.length - 1];
-            Arrays.fill(classes, String.class);
+            Class[] classes = new Class[1];
+            classes[0] = String[].class;
 
             //params 作为反射的参数  都是具体的值
             String[] params = new String[operate.length - 1];
@@ -127,12 +127,15 @@ public class RedisCommandOperate {
                 Method[] methods = methodsList.get(i);
                 for (Method method : methods) {
                     if (method.getName().equals(methodName) && Arrays.equals(method.getParameterTypes(), classes)) {
-                        System.out.println(method.invoke(dataTypeMethodList.get(i), params));
+                        System.out.println(method.invoke(dataTypeMethodList.get(i), (Object) params));
                     }
                 }
             }
         } else {
             System.out.println("the command is not exists.");
+
         }
     }
+
 }
+
