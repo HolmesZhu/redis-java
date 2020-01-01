@@ -25,7 +25,6 @@ public class StringDataType extends CommonDataType {
     }
 
 
-
     /**
      * @param key   键
      * @param value 值
@@ -160,7 +159,14 @@ public class StringDataType extends CommonDataType {
      * 当键 key 存在但不是字符串类型时， 返回ERROR。
      */
     public String getSet(String key, String value) {
-        String oldValue = get(key);
+        if (!exists(key)) {
+            set(key, value);
+            return null;
+        }
+        if (!stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        String oldValue = (String) redisMap.get(key);
         set(key, value);
         return oldValue;
     }
@@ -173,8 +179,14 @@ public class StringDataType extends CommonDataType {
      * 当键 key 不存在时， 命令返回 0 。
      * 当 key 储存的不是字符串值时， 返回一个错误。
      */
-    public int strLen(String key) {
-        return get(key).length();
+    public String strLen(String key) {
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        return String.valueOf(get(key).length());
     }
 
 
@@ -185,10 +197,17 @@ public class StringDataType extends CommonDataType {
      * @description 如果键 key 已经存在并且它的值是一个字符串， APPEND 命令将把 value 追加到键 key 现有值的末尾。
      * 如果 key 不存在， APPEND 就简单地将键 key 的值设为 value ， 就像执行 SET key value 一样。
      */
-    public int append(String key, String value) {
+    public String append(String key, String value) {
+        if (!exists(key)) {
+            set(key, value);
+            return String.valueOf(value.length());
+        }
+        if (!stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         String newValue = get(key) + value;
         set(key, newValue);
-        return strLen(key);
+        return String.valueOf(newValue.length());
     }
 
 
@@ -199,28 +218,9 @@ public class StringDataType extends CommonDataType {
      * @return 从偏移量 offset 开始， 用 value 参数覆写(overwrite)键 key 储存的字符串值。
      * 不存在的键 key 当作空白字符串处理。
      */
-    public int setRange(String key, int offset, String value) {
-        //当key存在字符串的时候
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                return -1;
-            }
-            String str = get(key);
-            //当偏移量大于str的长度时
-            if (str.length() < offset) {
-                StringBuilder sb = new StringBuilder(str);
-                for (int i = 0; i < offset - strLen(key); i++) {
-                    sb.append(" ");
-                }
-                String s = sb.append(value).toString();
-                set(key, s);
-                return s.length();
-            } else {
-                String s = str.substring(0, offset) + value;
-                set(key, s);
-                return s.length();
-            }
-        } else {
+    public String setRange(String key, int offset, String value) {
+        //当key字符串的时候
+        if (!exists(key)) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < offset; i++) {
                 sb.append(" ");
@@ -228,7 +228,26 @@ public class StringDataType extends CommonDataType {
             String blankString = sb.toString();
             String s = blankString + value;
             set(key, s);
-            return s.length();
+            return String.valueOf(s.length());
+        }
+        if (stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+
+        String str = (String) redisMap.get(key);
+        //当偏移量大于str的长度时
+        if (str.length() < offset) {
+            StringBuilder sb = new StringBuilder(str);
+            for (int i = 0; i < offset - str.length(); i++) {
+                sb.append(" ");
+            }
+            String s = sb.append(value).toString();
+            set(key, s);
+            return String.valueOf(s.length());
+        } else {
+            String s = str.substring(0, offset) + value;
+            set(key, s);
+            return String.valueOf(s.length());
         }
     }
 
@@ -242,34 +261,35 @@ public class StringDataType extends CommonDataType {
      * GETRANGE 通过保证子字符串的值域(range)不超过实际字符串的值域来处理超出范围的值域请求。
      */
     public String getRange(String key, int start, int end) {
-        if (exists(key)) {
-            if (!stringDataType(key)) {
-                return "ERROR";
-            }
-            String str = get(key);
-            int len = strLen(key);
-            if (start < 0) {
-                start = start + len >= 0 ? start + len : -start;
-            }
-            if (end < 0) {
-                end = end + len >= 0 ? end + len : -end;
-            }
-            if (start <= end) {
-                //当start >= 字符串长度时
-                if (start >= len) {
-                    return "";
-                }
-                //当start < 字符串长度时  且 end >= 字符串长度时
-                if (end >= len) {
-                    return str.substring(start, len);
-                }
-                //当 end < 字符串长度时
-                return str.substring(start, end + 1);
-            }
-            return "";
+        if (!exists(key)) {
+            return null;
         }
-        //不存在key 直接返回null
-        return null;
+        if (!stringDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+
+        String str = (String) redisMap.get(key);
+        int len = str.length();
+        if (start < 0) {
+            start = start + len >= 0 ? start + len : -start;
+        }
+        if (end < 0) {
+            end = end + len >= 0 ? end + len : -end;
+        }
+        if (start <= end) {
+            //当start >= 字符串长度时
+            if (start >= len) {
+                return "";
+            }
+            //当start < 字符串长度时  且 end >= 字符串长度时
+            if (end >= len) {
+                return str.substring(start, len);
+            }
+            //当 end < 字符串长度时
+            return str.substring(start, end + 1);
+        }
+        return "";
+
     }
 
 

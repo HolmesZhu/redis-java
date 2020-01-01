@@ -102,60 +102,67 @@ public class StringMethod {
         }
     }
 
-
-    public String getSet(String key, String value) {
-        if (!stringDataType.exists(key)) {
-//            set(key, value);
-            return null;
-        }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return stringDataType.getSet(key, value);
-    }
-
-
-    public String strLen(String key) {
-        if (!stringDataType.exists(key)) {
-            return "0";
-        }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return String.valueOf(stringDataType.strLen(key));
-    }
-
-
-    public String append(String key, String value) {
-        if (!stringDataType.exists(key)) {
-            stringDataType.set(key, value);
-            return String.valueOf(value.length());
-        }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return String.valueOf(stringDataType.append(key, value));
-    }
-
-    public String setRange(String key, String offset, String value) {
-        if (Utils.isInteger(offset)) {
-            return String.valueOf(stringDataType.setRange(key, Integer.parseInt(offset), value));
+    public String getSet(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String value = params[1];
+            return stringDataType.getSet(key, value);
         } else {
-            return "offset is not integer.";
+            return CommonConstants.INVALID_PARAMS;
         }
     }
 
-    public String getRange(String key, String start, String end) {
-        if (Utils.isInteger(start)) {
-            if (Utils.isInteger(end)) {
-                return stringDataType.getRange(key, Integer.parseInt(start), Integer.parseInt(end));
-            } else {
-                return "end is not integer.";
+    public String strLen(String[] params) {
+        if (params.length == 1) {
+            String key = params[0];
+            return stringDataType.strLen(key);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String append(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String value = params[1];
+            return stringDataType.append(key, value);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String setRange(String[] params) {
+        if (params.length == 3) {
+            String key = params[0];
+            String offset = params[1];
+            if (!Utils.isInteger(offset)) {
+                return "offset is not integer.";
             }
+            String value = params[2];
+            return stringDataType.setRange(key, Integer.parseInt(offset), value);
         } else {
-            return "start is not integer";
+            return CommonConstants.INVALID_PARAMS;
         }
     }
+
+    public String getRange(String[] params) {
+        if (params.length == 3) {
+            String key = params[0];
+            String start = params[1];
+            if (!Utils.isInteger(start)) {
+                return "start is not number.";
+            }
+            String end = params[2];
+            if (!Utils.isInteger(end)) {
+                return "end is not number.";
+            }
+            return stringDataType.getRange(key, Integer.parseInt(start), Integer.parseInt(end));
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+
 
     public String incr(String key) {
         if (!stringDataType.exists(key)) {
