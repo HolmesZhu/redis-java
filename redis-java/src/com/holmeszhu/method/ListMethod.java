@@ -28,109 +28,94 @@ public class ListMethod {
 
     private ListDataType listDataType = new ListDataType();
 
-    /**
-     * @param key
-     * @param values
-     * @return 不存在这个key  新建list添加
-     * 存在key不是list类型 返回错误
-     */
-    public String lPush(String key, String[] values) {
-        if (!listDataType.exists(key)) {
-            LinkedList<String> list = new LinkedList<>();
-            for (String value : values) {
-                list.addFirst(value);
+
+    public String lPush(String[] params) {
+        if (params.length >= 2) {
+            String key = params[0];
+            LinkedList<String> values = new LinkedList<>();
+            for (int i = 1; i < params.length; i++) {
+                values.add(params[i]);
             }
-            listDataType.setList(key, list);
-            return String.valueOf(values.length);
+            return listDataType.lPush(key, values);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
         }
-        if (!listDataType.listDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return listDataType.lPush(key, Arrays.asList(values));
     }
 
     //存在疑惑  当这个list存在值后来删除之后  list也为空  不知这时候能否再次插入
-    public String lPushX(String key, String value) {
-        if (!listDataType.exists(key)) {
-            return "0";
-        }
-        if (!listDataType.listDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return listDataType.lPushX(key, value);
-    }
-
-    public String rPush(String key, String[] values) {
-        if (!listDataType.exists(key)) {
-            LinkedList<String> list = new LinkedList<>(Arrays.asList(values));
-            listDataType.setList(key, list);
-            return String.valueOf(values.length);
-        }
-        if (!listDataType.listDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return listDataType.rPush(key, Arrays.asList(values));
-    }
-
-    public String rPushX(String key, String value) {
-        if (!listDataType.exists(key)) {
-            return "0";
-        }
-        if (!listDataType.listDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return listDataType.rPushX(key, value);
-    }
-
-    public String lPop(String key) {
-        if (!listDataType.exists(key)) {
-            return null;
-        }
-        if (!listDataType.listDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return listDataType.lPop(key);
-    }
-
-    public String rPop(String key) {
-        if (!listDataType.exists(key)) {
-            return null;
-        }
-        if (!listDataType.listDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return listDataType.rPop(key);
-    }
-
-    //当不存在这个source的时候 返回null
-    //当source不属于list返回错误
-    public String rPopLPush(String source, String destination) {
-        if (!listDataType.exists(source)) {
-            return null;
-        }
-        if (!listDataType.exists(destination)) {
-            listDataType.setList(destination, new LinkedList<>());
-        }
-        if (!listDataType.listDataType(source)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        if (!listDataType.listDataType(destination)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return listDataType.rPopLPush(source, destination);
-    }
-
-    public String lRem(String key, String count, String value) {
-        if (!listDataType.exists(key)) {
-            return "0";
-        }
-        if (!listDataType.listDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        if (Utils.isInteger(count)) {
-            return String.valueOf(listDataType.lRem(key, Integer.parseInt(count), value));
+    public String lPushX(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String value = params[1];
+            return listDataType.lPushX(key, value);
         } else {
-            return "count is not int";
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String rPush(String[] params) {
+        if (params.length >= 2) {
+            String key = params[0];
+            LinkedList<String> values = new LinkedList<>();
+            for (int i = 1; i < params.length; i++) {
+                values.add(params[i]);
+            }
+            return listDataType.rPush(key, values);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String rPushX(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String value = params[1];
+            return listDataType.rPushX(key, value);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String lPop(String[] params) {
+        if (params.length == 1) {
+            String key = params[0];
+            return listDataType.lPop(key);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+
+    public String rPop(String[] params) {
+        if (params.length == 1) {
+            String key = params[0];
+            return listDataType.rPop(key);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String rPopLPush(String[] params) {
+        if (params.length == 2) {
+            String source = params[0];
+            String destination = params[1];
+            return listDataType.rPopLPush(source, destination);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String lRem(String[] params) {
+        if (params.length == 3) {
+            String key = params[0];
+            String count = params[1];
+            if (!Utils.isInteger(count)) {
+                return "count is not int";
+            }
+            String value = params[2];
+            return listDataType.lRem(key, Integer.parseInt(count), value);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
         }
     }
 
@@ -190,9 +175,22 @@ public class ListMethod {
 
     }
 
-//    public String lRange(String key, String start, String stop) {
-//
-//    }
+    public String lRange(String[] params) {
+        if (params.length == 3) {
+            String key = params[0];
+            String start = params[1];
+            if (!Utils.isInteger(start)) {
+                return "start is not number";
+            }
+            String stop = params[2];
+            if (!Utils.isInteger(start)) {
+                return "stop is not number";
+            }
+            return String.valueOf(listDataType.lRange(key, Integer.parseInt(start), Integer.parseInt(stop)));
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
 
 
 }

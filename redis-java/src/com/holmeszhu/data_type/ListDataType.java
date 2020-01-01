@@ -1,10 +1,7 @@
 package com.holmeszhu.data_type;
 
 
-import com.holmeszhu.constant.BaseResultCodeEnum;
 import com.holmeszhu.constant.CommonConstants;
-import com.holmeszhu.method.ListMethod;
-import com.holmeszhu.result.BaseResult;
 
 import java.util.*;
 
@@ -15,9 +12,6 @@ public class ListDataType extends CommonDataType {
         return redisMap.get(key) instanceof LinkedList;
     }
 
-    public void setList(String key, LinkedList<String> values) {
-        redisMap.put(key, values);
-    }
 
     /**
      * @param key
@@ -30,12 +24,22 @@ public class ListDataType extends CommonDataType {
      * 如果 key 不存在，一个空列表会被创建并执行 LPUSH 操作。
      * 当 key 存在但不是列表类型时，返回一个错误。
      */
-    public String lPush(String key, List<String> values) {
+    public String lPush(String key, LinkedList<String> values) {
+        if (!exists(key)) {
+            LinkedList<String> linkedList = new LinkedList<>();
+            for (String value : values) {
+                linkedList.addFirst(value);
+            }
+            redisMap.put(key, linkedList);
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         LinkedList<String> list = lRange(key, 0, -1);
         for (String value : values) {
             list.addFirst(value);
         }
-        setList(key, list);
+        redisMap.put(key, list);
         return String.valueOf(list.size());
     }
 
@@ -47,12 +51,18 @@ public class ListDataType extends CommonDataType {
      * 和 LPUSH key value [value …] 命令相反，当 key 不存在时， LPUSHX 命令什么也不做。
      */
     public String lPushX(String key, String value) {
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         LinkedList<String> list = lRange(key, 0, -1);
         if (list.size() == 0) {
             return "0";
         }
         list.addFirst(value);
-        setList(key, list);
+        redisMap.put(key, list);
         return String.valueOf(list.size());
     }
 
@@ -64,9 +74,16 @@ public class ListDataType extends CommonDataType {
      * @description 将一个或多个值 value 插入到列表 key 的表尾(最右边)。
      */
     public String rPush(String key, List<String> values) {
+        if (!exists(key)) {
+            LinkedList<String> linkedList = new LinkedList<>(values);
+            redisMap.put(key, linkedList);
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         LinkedList<String> list = lRange(key, 0, -1);
         list.addAll(values);
-        setList(key, list);
+        redisMap.put(key, list);
         return String.valueOf(list.size());
     }
 
@@ -78,12 +95,18 @@ public class ListDataType extends CommonDataType {
      * @description 将值 value 插入到列表 key 的表尾，当且仅当 key 存在并且是一个列表。
      */
     public String rPushX(String key, String value) {
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         LinkedList<String> list = lRange(key, 0, -1);
         if (list.size() == 0) {
             return "0";
         }
         list.add(value);
-        setList(key, list);
+        redisMap.put(key, list);
         return String.valueOf(list.size());
     }
 
@@ -107,6 +130,12 @@ public class ListDataType extends CommonDataType {
      * @description 移除并返回列表 key 的头元素。
      */
     public String lPop(String key) {
+        if (!exists(key)) {
+            return null;
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         LinkedList<String> list = lRange(key, 0, -1);
         if (list.size() > 0) {
             return list.removeFirst();
@@ -122,6 +151,12 @@ public class ListDataType extends CommonDataType {
      * @description 移除并返回列表 key 的尾元素。
      */
     public String rPop(String key) {
+        if (!exists(key)) {
+            return null;
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         LinkedList<String> list = lRange(key, 0, -1);
         if (list.size() > 0) {
             return list.removeLast();
@@ -143,62 +178,74 @@ public class ListDataType extends CommonDataType {
     public LinkedList<String> lRange(String key, int start, int stop) {
 
         LinkedList<String> result = new LinkedList<>();
-        if (exists(key)) {
-            if (!listDataType(key)) {
-                return result;
-            }
-
-            // 获取存在的key
-            LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
-
-            if (list.size() == 0) {
-                return list;
-            }
-
-            //排除不符合的下标
-            if (start >= list.size() || start < -list.size() || stop < -list.size()) {
-                return result;
-            }
-
-
-            // 根据start的大小重置下标  譬如原来是-1 代表倒数第一个元素  列表有5个元素  下标就是4
-            if (start < 0) {
-                start = list.size() + start;
-            }
-
-            //根据stop的大小重置下标
-            if (stop < 0) {
-                stop = list.size() + stop;
-            }
-
-            //如果start下标比stop大  返回空list
-            if (start > stop) {
-                return result;
-            }
-
-            if (stop >= list.size()) {
-                stop = list.size() - 1;
-            }
-
-            for (int i = start; i <= stop; i++) {
-                result.add(list.get(i));
-            }
+        if (!exists(key)) {
+            return result;
+        }
+        if (!listDataType(key)) {
+            return result;
         }
 
+        // 获取存在的key
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
+
+        if (list.size() == 0) {
+            return list;
+        }
+
+        //排除不符合的下标
+        if (start >= list.size() || start < -list.size() || stop < -list.size()) {
+            return result;
+        }
+
+
+        // 根据start的大小重置下标  譬如原来是-1 代表倒数第一个元素  列表有5个元素  下标就是4
+        if (start < 0) {
+            start = list.size() + start;
+        }
+
+        //根据stop的大小重置下标
+        if (stop < 0) {
+            stop = list.size() + stop;
+        }
+
+        //如果start下标比stop大  返回空list
+        if (start > stop) {
+            return result;
+        }
+
+        if (stop >= list.size()) {
+            stop = list.size() - 1;
+        }
+
+        for (int i = start; i <= stop; i++) {
+            result.add(list.get(i));
+        }
         return result;
 
     }
 
+    //如果 source 不存在，返回null，并且不执行其他动作。
     public String rPopLPush(String source, String destination) {
+        if (!exists(source)) {
+            return null;
+        }
+        if (!exists(destination)) {
+            redisMap.put(destination, new LinkedList<>());
+        }
+        if (!listDataType(source)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        if (!listDataType(destination)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+
         String value = rPop(source);
         //当source正常的时候
         if (!value.equals(CommonConstants.EMPTY_LIST)) {
             //添加另一个参数
-            LinkedList<String> list = new LinkedList<>();
-            String result = lPush(destination, list);
-            if (result.equals(CommonConstants.WRONG_VALUE_TYPE)) {
-                return "destination： " + result;
-            }
+            LinkedList<String> list = lRange(destination, 0, -1);
+            list.addFirst(value);
+            redisMap.put(destination, list);
         }
         return value;
     }
@@ -214,8 +261,14 @@ public class ListDataType extends CommonDataType {
      * count < 0 : 从表尾开始向表头搜索，移除与 value 相等的元素，数量为 count 的绝对值。
      * count = 0 : 移除表中所有与 value 相等的值。
      */
-    public int lRem(String key, int count, String value) {
+    public String lRem(String key, int count, String value) {
 
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         LinkedList<String> list = lRange(key, 0, -1);
         //计算出列表中值等于value的数量
         int num = 0;
@@ -224,12 +277,11 @@ public class ListDataType extends CommonDataType {
                 num++;
             }
         }
-
         // count = 0 时候，移除所有与value相等的值
         // 当列表中等于value的数据比count小的时候 说明我们最多只能删除num大小的数据 这种就类似count为0的情况 全部删除
         if (count == 0 || num < Math.abs(count)) {
             list.removeIf(item -> item.equals(value));
-            return num;
+            return String.valueOf(num);
         } else {
             int tempCount = 0;
             if (count > 0) {
@@ -250,7 +302,7 @@ public class ListDataType extends CommonDataType {
                     break;
                 }
             }
-            return Math.abs(count);
+            return String.valueOf(Math.abs(count));
         }
 
     }
@@ -325,8 +377,6 @@ public class ListDataType extends CommonDataType {
         return "OK";
 
     }
-
-
 
 
 }
