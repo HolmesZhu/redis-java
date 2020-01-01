@@ -4,6 +4,9 @@ import com.holmeszhu.constant.CommonConstants;
 import com.holmeszhu.data_type.StringDataType;
 import com.holmeszhu.util.Utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 我们将参数校验的逻辑放到这一层来处理
  * 传入参数都是字符串  我们需要进行校验  看看key是否存在  或者是否是正确的类型
@@ -163,85 +166,91 @@ public class StringMethod {
     }
 
 
-
-    public String incr(String key) {
-        if (!stringDataType.exists(key)) {
-            stringDataType.set(key, "1");
-            return "1";
+    public String incr(String[] params) {
+        if (params.length == 1) {
+            String key = params[0];
+            return stringDataType.incr(key);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
         }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return stringDataType.incr(key);
     }
 
-    public String incrBy(String key, String increment) {
-        if (!stringDataType.exists(key)) {
-            if (Utils.isInteger(increment)) {
-                stringDataType.set(key, increment);
-                return increment;
-            } else {
-                return "increment is not int";
+    public String incrBy(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String increment = params[1];
+            if (!Utils.isInteger(increment)) {
+                return "increment is not number";
             }
-        }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        if (Utils.isInteger(increment)) {
             return stringDataType.incrBy(key, Integer.parseInt(increment));
         } else {
-            return "increment is not int";
+            return CommonConstants.INVALID_PARAMS;
         }
     }
 
-    public String incrByFloat(String key, String increment) {
-        if (!stringDataType.exists(key)) {
-            stringDataType.set(key, increment);
-            return increment;
-        }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        if (Utils.isDouble(increment)) {
+    public String incrByFloat(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String increment = params[1];
+            if (!Utils.isDouble(increment)) {
+                return "increment is not number";
+            }
             return stringDataType.incrByFloat(key, Double.parseDouble(increment));
         } else {
-            return "increment is not double";
+            return CommonConstants.INVALID_PARAMS;
         }
     }
 
-    public String decr(String key) {
-        if (!stringDataType.exists(key)) {
-            stringDataType.set(key, "-1");
-            return "-1";
+
+    public String decr(String[] params) {
+        if (params.length == 1) {
+            String key = params[0];
+            return stringDataType.decr(key);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
         }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        return stringDataType.decr(key);
     }
 
-    public String decrBy(String key, String increment) {
-        if (!stringDataType.exists(key)) {
-            if (Utils.isInteger(increment)) {
-                stringDataType.set(key, String.valueOf(-Integer.parseInt(increment)));
-                return increment;
-            } else {
-                return "increment is not int";
+    public String decrBy(String[] params) {
+        if (params.length == 2) {
+            String key = params[0];
+            String increment = params[1];
+            if (!Utils.isInteger(increment)) {
+                return "increment is not number";
             }
-        }
-        if (!stringDataType.stringDataType(key)) {
-            return CommonConstants.WRONG_VALUE_TYPE;
-        }
-        if (Utils.isInteger(increment)) {
             return stringDataType.decrBy(key, Integer.parseInt(increment));
         } else {
-            return "increment is not int";
+            return CommonConstants.INVALID_PARAMS;
         }
     }
 
-//    public String mSet(String key, String value) {
-//        stringDataType.mSet(key,value);
-//    }
+    public String mSet(String[] params) {
+        if (params.length > 0 && params.length % 2 == 0) {
+            Map<String, String> map = new HashMap<>();
+            for (int i = 0; i < params.length; i += 2) {
+                map.put(params[i], params[i + 1]);
+            }
+            return stringDataType.mSet(map);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String mSetNx(String[] params) {
+        if (params.length > 0 && params.length % 2 == 0) {
+            Map<String, String> map = new HashMap<>();
+            for (int i = 0; i < params.length; i += 2) {
+                map.put(params[i], params[i + 1]);
+            }
+            return stringDataType.mSetNx(map);
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
+    public String mGet(String[] params) {
+        return String.valueOf(stringDataType.mGet(params));
+    }
 
 
 }
