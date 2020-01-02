@@ -118,9 +118,15 @@ public class ListDataType extends CommonDataType {
      * 如果 key 不存在，则 key 被解释为一个空列表，返回 0 .
      * 如果 key 不是列表类型，返回一个错误。
      */
-    public long lLen(String key) {
+    public String lLen(String key) {
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         LinkedList<String> linkedList = lRange(key, 0, -1);
-        return linkedList.size();
+        return String.valueOf(linkedList.size());
     }
 
 
@@ -319,6 +325,13 @@ public class ListDataType extends CommonDataType {
      */
     public String lIndex(String key, int index) {
 
+        if (!exists(key)) {
+            return null;
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+
         LinkedList<String> list = lRange(key, 0, -1);
 
         //如果下标大于等于0  并且index的值小于list的大小  直接获取
@@ -346,9 +359,18 @@ public class ListDataType extends CommonDataType {
      * 当 key 不存在时， key 被视为空列表，不执行任何操作。
      * 如果 key 不是列表类型，返回一个错误。
      */
-    public int lInsert(String key, String direct, String pivot, String value) {
+    public String lInsert(String key, String direct, String pivot, String value) {
 
-        return 0;
+
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+
+
+        return "0";
 
     }
 
@@ -361,6 +383,13 @@ public class ListDataType extends CommonDataType {
      * @description
      */
     public String lSet(String key, int index, String value) {
+
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_KEY;
+        }
+        if (!listDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
 
         LinkedList<String> list = lRange(key, 0, -1);
 
@@ -378,5 +407,20 @@ public class ListDataType extends CommonDataType {
 
     }
 
+    public String lTrim(String key, int start, int stop) {
+        return "";
+    }
+
+    public String bLPop(List<String> keys, int timeout) {
+        return "";
+    }
+
+    public String bRPop(List<String> keys, int timeout) {
+        return "";
+    }
+
+    public String bRPopLPush(String source, String destination, int timeout) {
+        return "";
+    }
 
 }

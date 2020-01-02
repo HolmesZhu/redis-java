@@ -1,9 +1,9 @@
 package com.holmeszhu.data_type;
 
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Random;
+import com.holmeszhu.constant.CommonConstants;
+
+import java.util.*;
 
 public class SetDataType extends CommonDataType {
 
@@ -16,7 +16,13 @@ public class SetDataType extends CommonDataType {
         redisMap.put(key, hashSet);
     }
 
-    public int sAdd(String key, HashSet<String> members) {
+    public String sAdd(String key, Set<String> members) {
+        if (!exists(key)) {
+            redisMap.put(key, members);
+        }
+        if (!setDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         int num = 0;
         HashSet<String> hashSet = sMembers(key);
         for (String member : members) {
@@ -25,7 +31,7 @@ public class SetDataType extends CommonDataType {
                 num++;
             }
         }
-        return num;
+        return String.valueOf(num);
     }
 
 //    public int isMember(String key, String member) {
@@ -33,18 +39,29 @@ public class SetDataType extends CommonDataType {
 //    }
 
 
-    public int sIsMember(String key, String member) {
-
+    public String sIsMember(String key, String member) {
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!setDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         HashSet<String> hashSet = sMembers(key);
         if (hashSet.contains(member)) {
-            return 1;
+            return "1";
         } else {
-            return 0;
+            return "0";
         }
 
     }
 
     public String sPop(String key) {
+        if (!exists(key)) {
+            return null;
+        }
+        if (!setDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         HashSet<String> hashSet = sMembers(key);
         if (hashSet.isEmpty()) {
             return null;
@@ -62,7 +79,13 @@ public class SetDataType extends CommonDataType {
     }
 
 
-    public String sRandMember(String key) {
+    public String sRandMember(String key, int count) {
+        if (!exists(key)) {
+            return null;
+        }
+        if (!setDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
         HashSet<String> hashSet = sMembers(key);
         if (hashSet.isEmpty()) {
             return null;
@@ -77,10 +100,18 @@ public class SetDataType extends CommonDataType {
         return value;
     }
 
-//    public String sRandMember(String key, String count) {
-//
-//    }
+    public String sRem(String key, Set<String> members) {
+        return "";
+    }
 
+
+    public String sMove(String source, String destination, String member) {
+        return "";
+    }
+
+    public String sCard(String key) {
+        return "";
+    }
 
 
     public HashSet<String> sMembers(String key) {
@@ -94,4 +125,27 @@ public class SetDataType extends CommonDataType {
         return hashSet;
     }
 
+    public String sInter(Set<String> keys) {
+        return "";
+    }
+
+    public String sInterStore(String destination, Set<String> keys) {
+        return "";
+    }
+
+    public String sUnion(Set<String> keys) {
+        return "";
+    }
+
+    public String sUnionStore(String destination, Set<String> keys) {
+        return "";
+    }
+
+    public String sDiff(Set<String> keys) {
+        return "";
+    }
+
+    public String sDiffStore(String destination, Set<String> keys) {
+        return "";
+    }
 }

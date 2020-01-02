@@ -5,10 +5,7 @@ import com.holmeszhu.method.StringMethod;
 import com.holmeszhu.util.Utils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class Test {
 
@@ -80,5 +77,8 @@ public class Test {
 
         String s = "2";
         System.out.println(Utils.isDouble(s));
+
+        Set<String> set = new TreeSet<>();
+        System.out.println(set instanceof HashSet);
     }
 }
