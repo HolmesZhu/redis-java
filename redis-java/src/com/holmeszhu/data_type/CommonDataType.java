@@ -1,7 +1,10 @@
 package com.holmeszhu.data_type;
 
+import com.holmeszhu.util.Utils;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 
 public class CommonDataType {
@@ -31,22 +34,30 @@ public class CommonDataType {
 
 
     protected void expire(String key, long seconds) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        del(key);
+        ExecutorService executorService = Utils.getSimpleExecutorService();
+        executorService.execute(() -> {
+            try {
+                Thread.sleep(seconds * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            del(key);
+        });
+
     }
 
 
     protected void pExpire(String key, long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        del(key);
+        ExecutorService executorService = Utils.getSimpleExecutorService();
+        executorService.execute(() -> {
+            try {
+                Thread.sleep(milliseconds);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            del(key);
+        });
+
     }
 
 

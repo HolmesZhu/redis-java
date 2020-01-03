@@ -38,7 +38,6 @@ public class StringMethod {
         if (params.length == 2) {
             String key = params[0];
             String value = params[1];
-            System.out.println("执行到这里");
             return stringDataType.set(key, value);
         } else if (params.length == 3) {
             String key = params[0];

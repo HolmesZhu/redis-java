@@ -78,7 +78,16 @@ public class Test {
         String s = "2";
         System.out.println(Utils.isDouble(s));
 
-        Set<String> set = new TreeSet<>();
-        System.out.println(set instanceof HashSet);
+
+        Map<Double, String> map = new TreeMap<>();
+        map.put(1.5, "zhuyao1");
+        map.put(1.3, "zhuyao1");
+        map.put(1.4, "zhuyao1");
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+
     }
 }
