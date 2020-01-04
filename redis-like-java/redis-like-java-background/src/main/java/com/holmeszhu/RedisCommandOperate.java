@@ -1,7 +1,9 @@
-package holmeszhu;
+package com.holmeszhu;
 
 
 
+import com.holmeszhu.method.*;
+import com.holmeszhu.operator_method_enum.*;
 import holmeszhu.method.*;
 import holmeszhu.operator_method_enum.*;
 

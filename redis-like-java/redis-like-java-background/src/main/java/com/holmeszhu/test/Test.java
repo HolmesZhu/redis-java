@@ -1,6 +1,6 @@
-package holmeszhu.test;
+package com.holmeszhu.test;
 
-import holmeszhu.util.Utils;
+import com.holmeszhu.util.Utils;
 
 import java.util.HashMap;
 import java.util.Iterator;

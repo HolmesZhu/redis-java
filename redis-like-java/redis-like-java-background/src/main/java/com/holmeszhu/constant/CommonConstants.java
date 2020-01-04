@@ -1,4 +1,4 @@
-package holmeszhu.constant;
+package com.holmeszhu.constant;
 
 public interface CommonConstants {
 

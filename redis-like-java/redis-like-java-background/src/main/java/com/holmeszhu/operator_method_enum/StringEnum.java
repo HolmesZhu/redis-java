@@ -1,4 +1,4 @@
-package holmeszhu.operator_method_enum;
+package com.holmeszhu.operator_method_enum;
 
 public enum StringEnum {
 

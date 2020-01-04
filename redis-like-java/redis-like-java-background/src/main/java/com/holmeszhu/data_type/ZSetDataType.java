@@ -1,4 +1,4 @@
-package holmeszhu.data_type;
+package com.holmeszhu.data_type;
 
 import java.util.Map;
 import java.util.Set;

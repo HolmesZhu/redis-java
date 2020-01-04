@@ -1,7 +1,7 @@
-package holmeszhu.data_type;
+package com.holmeszhu.data_type;
 
-import holmeszhu.constant.CommonConstants;
-import holmeszhu.util.Utils;
+import com.holmeszhu.constant.CommonConstants;
+import com.holmeszhu.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Iterator;

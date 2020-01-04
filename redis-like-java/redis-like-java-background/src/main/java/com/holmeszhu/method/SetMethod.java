@@ -1,9 +1,9 @@
-package holmeszhu.method;
+package com.holmeszhu.method;
 
 
-import holmeszhu.constant.CommonConstants;
-import holmeszhu.data_type.SetDataType;
-import holmeszhu.util.Utils;
+import com.holmeszhu.constant.CommonConstants;
+import com.holmeszhu.data_type.SetDataType;
+import com.holmeszhu.util.Utils;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -1,10 +1,10 @@
-package holmeszhu.method;
+package com.holmeszhu.method;
 
 
 
-import holmeszhu.constant.CommonConstants;
-import holmeszhu.data_type.ListDataType;
-import holmeszhu.util.Utils;
+import com.holmeszhu.constant.CommonConstants;
+import com.holmeszhu.data_type.ListDataType;
+import com.holmeszhu.util.Utils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

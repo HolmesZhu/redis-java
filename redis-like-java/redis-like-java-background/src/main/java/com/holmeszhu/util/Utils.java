@@ -1,4 +1,4 @@
-package holmeszhu.util;
+package com.holmeszhu.util;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
