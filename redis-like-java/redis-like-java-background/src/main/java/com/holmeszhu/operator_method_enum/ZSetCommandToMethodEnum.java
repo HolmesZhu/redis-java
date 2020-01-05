@@ -1,6 +1,6 @@
 package com.holmeszhu.operator_method_enum;
 
-public enum ZSetEnum {
+public enum ZSetCommandToMethodEnum {
 
     Z_ADD("zadd", "zAdd"),
     Z_SCORE("zscore", "zScore"),
@@ -32,7 +32,7 @@ public enum ZSetEnum {
 
     private String methodName;
 
-    ZSetEnum(String redisOperate, String methodName) {
+    ZSetCommandToMethodEnum(String redisOperate, String methodName) {
         this.redisOperate = redisOperate;
         this.methodName = methodName;
     }

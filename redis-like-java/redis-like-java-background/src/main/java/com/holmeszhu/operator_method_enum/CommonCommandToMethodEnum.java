@@ -1,6 +1,6 @@
 package com.holmeszhu.operator_method_enum;
 
-public enum CommonEnum {
+public enum CommonCommandToMethodEnum {
 
     EXISTS("exists", "exists"),
     DEL("del", "del"),
@@ -10,7 +10,7 @@ public enum CommonEnum {
 
     private String methodName;
 
-    CommonEnum(String redisOperate, String methodName) {
+    CommonCommandToMethodEnum(String redisOperate, String methodName) {
         this.redisOperate = redisOperate;
         this.methodName = methodName;
     }

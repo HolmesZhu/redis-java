@@ -57,47 +57,47 @@ public class RedisCommandOperate {
 
     //根据redisOperate获得真正的方法名  一一对应关系
     public String getMethodNameByOperate(String redisOperate) {
-        CommonEnum[] commonEnums = CommonEnum.values();
-        StringEnum[] stringEnums = StringEnum.values();
-        ListEnum[] listEnums = ListEnum.values();
-        HashEnum[] hashEnums = HashEnum.values();
-        SetEnum[] setEnums = SetEnum.values();
-        ZSetEnum[] zSetEnums = ZSetEnum.values();
+        CommonCommandToMethodEnum[] commonCommandToMethodEnums = CommonCommandToMethodEnum.values();
+        StringCommandToMethodEnum[] stringCommandToMethodEnums = StringCommandToMethodEnum.values();
+        ListCommandToMethodEnum[] listCommandToMethodEnums = ListCommandToMethodEnum.values();
+        HashCommandToMethodEnum[] hashCommandToMethodEnums = HashCommandToMethodEnum.values();
+        SetCommandToMethodEnum[] setCommandToMethodEnums = SetCommandToMethodEnum.values();
+        ZSetCommandToMethodEnum[] zSetCommandToMethodEnums = ZSetCommandToMethodEnum.values();
 
 
-        for (CommonEnum commonEnum : commonEnums) {
-            if (commonEnum.getRedisOperate().equals(redisOperate)) {
-                return commonEnum.getMethodName();
+        for (CommonCommandToMethodEnum commonCommandToMethodEnum : commonCommandToMethodEnums) {
+            if (commonCommandToMethodEnum.getRedisOperate().equals(redisOperate)) {
+                return commonCommandToMethodEnum.getMethodName();
             }
         }
 
-        for (StringEnum stringEnum : stringEnums) {
-            if (stringEnum.getRedisOperate().equals(redisOperate)) {
-                return stringEnum.getMethodName();
+        for (StringCommandToMethodEnum stringCommandToMethodEnum : stringCommandToMethodEnums) {
+            if (stringCommandToMethodEnum.getRedisOperate().equals(redisOperate)) {
+                return stringCommandToMethodEnum.getMethodName();
             }
         }
 
-        for (ListEnum listEnum : listEnums) {
-            if (listEnum.getRedisOperate().equals(redisOperate)) {
-                return listEnum.getMethodName();
+        for (ListCommandToMethodEnum listCommandToMethodEnum : listCommandToMethodEnums) {
+            if (listCommandToMethodEnum.getRedisOperate().equals(redisOperate)) {
+                return listCommandToMethodEnum.getMethodName();
             }
         }
 
-        for (HashEnum hashEnum : hashEnums) {
-            if (hashEnum.getRedisOperate().equals(redisOperate)) {
-                return hashEnum.getMethodName();
+        for (HashCommandToMethodEnum hashCommandToMethodEnum : hashCommandToMethodEnums) {
+            if (hashCommandToMethodEnum.getRedisOperate().equals(redisOperate)) {
+                return hashCommandToMethodEnum.getMethodName();
             }
         }
 
-        for (SetEnum setEnum : setEnums) {
-            if (setEnum.getRedisOperate().equals(redisOperate)) {
-                return setEnum.getMethodName();
+        for (SetCommandToMethodEnum setCommandToMethodEnum : setCommandToMethodEnums) {
+            if (setCommandToMethodEnum.getRedisOperate().equals(redisOperate)) {
+                return setCommandToMethodEnum.getMethodName();
             }
         }
 
-        for (ZSetEnum zSetEnum : zSetEnums) {
-            if (zSetEnum.getRedisOperate().equals(redisOperate)) {
-                return zSetEnum.getMethodName();
+        for (ZSetCommandToMethodEnum zSetCommandToMethodEnum : zSetCommandToMethodEnums) {
+            if (zSetCommandToMethodEnum.getRedisOperate().equals(redisOperate)) {
+                return zSetCommandToMethodEnum.getMethodName();
             }
         }
 

@@ -1,6 +1,6 @@
 package com.holmeszhu.operator_method_enum;
 
-public enum ListEnum {
+public enum ListCommandToMethodEnum {
 
     L_PUSH("lpush", "lpush"),
     L_PUSH_NX("lpushx", "lPushX"),
@@ -33,7 +33,7 @@ public enum ListEnum {
 
     private String methodName;
 
-    ListEnum(String redisOperate, String methodName) {
+    ListCommandToMethodEnum(String redisOperate, String methodName) {
         this.redisOperate = redisOperate;
         this.methodName = methodName;
     }

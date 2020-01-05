@@ -1,6 +1,6 @@
 package com.holmeszhu.operator_method_enum;
 
-public enum HashEnum {
+public enum HashCommandToMethodEnum {
 
     HSET("hset", "hSet"),
     H_SET_NX("hsetnx", "hSetNx"),
@@ -25,7 +25,7 @@ public enum HashEnum {
 
     private String methodName;
 
-    HashEnum(String redisOperate, String methodName) {
+    HashCommandToMethodEnum(String redisOperate, String methodName) {
         this.redisOperate = redisOperate;
         this.methodName = methodName;
     }

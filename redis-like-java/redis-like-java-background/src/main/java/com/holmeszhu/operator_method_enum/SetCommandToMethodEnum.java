@@ -1,6 +1,6 @@
 package com.holmeszhu.operator_method_enum;
 
-public enum SetEnum {
+public enum SetCommandToMethodEnum {
 
     S_ADD("sadd", "sAdd"),
     S_IS_MEMBER("sismember", "sIsMember"),
@@ -23,7 +23,7 @@ public enum SetEnum {
 
     private String methodName;
 
-    SetEnum(String redisOperate, String methodName) {
+    SetCommandToMethodEnum(String redisOperate, String methodName) {
         this.redisOperate = redisOperate;
         this.methodName = methodName;
     }
