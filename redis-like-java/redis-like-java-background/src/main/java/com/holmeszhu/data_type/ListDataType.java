@@ -364,7 +364,6 @@ public class ListDataType extends CommonDataType {
      */
     public String lInsert(String key, String direct, String pivot, String value) {
 
-
         if (!exists(key)) {
             return "0";
         }
@@ -372,9 +371,22 @@ public class ListDataType extends CommonDataType {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
 
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
+        if (direct.equals("before")) {
+            if (list.contains(pivot)) {
+                list.add(list.indexOf(pivot), value);
 
-        return "0";
-
+            } else {
+                return "-1";
+            }
+        } else {
+            if (list.contains(pivot)) {
+                list.add(list.indexOf(pivot) + 1, value);
+            } else {
+                return "-1";
+            }
+        }
+        return String.valueOf(list.size());
     }
 
 
