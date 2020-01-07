@@ -196,7 +196,7 @@ public class HashDataType extends CommonDataType {
 
     public String hKeys(String key) {
         if (!exists(key)) {
-            return "(empty list or set)";
+            return CommonConstants.EMPTY_LIST_OR_SET;
         }
         if (!hashDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
@@ -209,7 +209,7 @@ public class HashDataType extends CommonDataType {
 
     public String hVals(String key) {
         if (!exists(key)) {
-            return "(empty list or set)";
+            return CommonConstants.EMPTY_LIST_OR_SET;
         }
         if (!hashDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
@@ -222,7 +222,7 @@ public class HashDataType extends CommonDataType {
 
     public String hGetAll(String key) {
         if (!exists(key)) {
-            return "(empty list or set)";
+            return CommonConstants.EMPTY_LIST_OR_SET;
         }
         if (!hashDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;

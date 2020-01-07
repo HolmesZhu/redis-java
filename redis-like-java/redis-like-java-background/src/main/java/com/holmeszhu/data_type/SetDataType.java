@@ -1,11 +1,11 @@
 package com.holmeszhu.data_type;
 
 
-
 import com.holmeszhu.constant.CommonConstants;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class SetDataType extends CommonDataType {
@@ -15,9 +15,6 @@ public class SetDataType extends CommonDataType {
         return redisMap.get(key) instanceof HashSet;
     }
 
-    public void setHashSet(String key, HashSet<String> hashSet) {
-        redisMap.put(key, hashSet);
-    }
 
     public String sAdd(String key, Set<String> members) {
         if (!exists(key)) {
@@ -27,7 +24,7 @@ public class SetDataType extends CommonDataType {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
         int num = 0;
-        HashSet<String> hashSet = sMembers(key);
+        Set<String> hashSet = (Set<String>) redisMap.get(key);
         for (String member : members) {
             if (!hashSet.contains(member)) {
                 hashSet.add(member);
@@ -37,10 +34,6 @@ public class SetDataType extends CommonDataType {
         return String.valueOf(num);
     }
 
-//    public int isMember(String key, String member) {
-//
-//    }
-
 
     public String sIsMember(String key, String member) {
         if (!exists(key)) {
@@ -49,7 +42,7 @@ public class SetDataType extends CommonDataType {
         if (!setDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        HashSet<String> hashSet = sMembers(key);
+        Set<String> hashSet = (Set<String>) redisMap.get(key);
         if (hashSet.contains(member)) {
             return "1";
         } else {
@@ -65,7 +58,7 @@ public class SetDataType extends CommonDataType {
         if (!setDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        HashSet<String> hashSet = sMembers(key);
+        Set<String> hashSet = (Set<String>) redisMap.get(key);
         if (hashSet.isEmpty()) {
             return null;
         } else {
@@ -89,7 +82,7 @@ public class SetDataType extends CommonDataType {
         if (!setDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        HashSet<String> hashSet = sMembers(key);
+        Set<String> hashSet = (Set<String>) redisMap.get(key);
         if (hashSet.isEmpty()) {
             return null;
         }
@@ -104,7 +97,23 @@ public class SetDataType extends CommonDataType {
     }
 
     public String sRem(String key, Set<String> members) {
-        return "";
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!setDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Set<String> values = (Set<String>) redisMap.get(key);
+        int num = 0;
+        for (String member : members) {
+            if (values.remove(member)) {
+                num++;
+            }
+        }
+        if (values.size() == 0) {
+            del(key);
+        }
+        return String.valueOf(num);
     }
 
 
@@ -113,42 +122,116 @@ public class SetDataType extends CommonDataType {
     }
 
     public String sCard(String key) {
-        return "";
-    }
-
-
-    public HashSet<String> sMembers(String key) {
-        HashSet<String> hashSet = new HashSet<>();
-        if (exists(key)) {
-            if (!setDataType(key)) {
-                return hashSet;
-            }
-            return (HashSet<String>) redisMap.get(key);
+        if (!exists(key)) {
+            return "0";
         }
-        return hashSet;
+        if (!setDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Set<String> set = (Set<String>) redisMap.get(key);
+        return String.valueOf(set);
     }
 
-    public String sInter(Set<String> keys) {
-        return "";
+
+    public String sMembers(String key) {
+        HashSet<String> hashSet = new HashSet<>();
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (!setDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        return String.valueOf(redisMap.get(key));
     }
 
-    public String sInterStore(String destination, Set<String> keys) {
-        return "";
+    public String sInter(List<String> keys) {
+        Set<String> first = (Set<String>) redisMap.get(keys.get(0));
+        for (String key : keys) {
+            if (!exists(key)) {
+                return CommonConstants.EMPTY_LIST_OR_SET;
+            }
+            if (!setDataType(key)) {
+                return CommonConstants.WRONG_VALUE_TYPE;
+            }
+            Set<String> set = (Set<String>) redisMap.get(key);
+            first.retainAll(set);
+        }
+        return String.valueOf(first);
     }
 
-    public String sUnion(Set<String> keys) {
-        return "";
+    public String sInterStore(String destination, List<String> keys) {
+        Set<String> first = (Set<String>) redisMap.get(keys.get(0));
+        for (String key : keys) {
+            if (!exists(key)) {
+                return CommonConstants.EMPTY_LIST_OR_SET;
+            }
+            if (!setDataType(key)) {
+                return CommonConstants.WRONG_VALUE_TYPE;
+            }
+            Set<String> set = (Set<String>) redisMap.get(key);
+            first.retainAll(set);
+        }
+        redisMap.put(destination, first);
+        return String.valueOf(first.size());
+    }
+
+    public String sUnion(List<String> keys) {
+        Set<String> first = new HashSet<>();
+        for (String key : keys) {
+            if (!exists(key)) {
+                continue;
+            }
+            if (!setDataType(key)) {
+                return CommonConstants.WRONG_VALUE_TYPE;
+            }
+            Set<String> set = (Set<String>) redisMap.get(key);
+            first.addAll(set);
+        }
+        return String.valueOf(first);
     }
 
     public String sUnionStore(String destination, Set<String> keys) {
-        return "";
+        Set<String> first = new HashSet<>();
+        for (String key : keys) {
+            if (!exists(key)) {
+                continue;
+            }
+            if (!setDataType(key)) {
+                return CommonConstants.WRONG_VALUE_TYPE;
+            }
+            Set<String> set = (Set<String>) redisMap.get(key);
+            first.addAll(set);
+        }
+        return String.valueOf(first.size());
     }
 
-    public String sDiff(Set<String> keys) {
-        return "";
+    public String sDiff(List<String> keys) {
+        Set<String> first = (Set<String>) redisMap.get(keys.get(0));
+        for (String key : keys) {
+            if (!exists(key)) {
+                continue;
+            }
+            if (!setDataType(key)) {
+                return CommonConstants.WRONG_VALUE_TYPE;
+            }
+            Set<String> set = (Set<String>) redisMap.get(key);
+            first.removeAll(set);
+        }
+        return String.valueOf(first);
     }
 
-    public String sDiffStore(String destination, Set<String> keys) {
-        return "";
+    public String sDiffStore(String destination, List<String> keys) {
+        Set<String> first = (Set<String>) redisMap.get(keys.get(0));
+        for (String key : keys) {
+            if (!exists(key)) {
+                break;
+            }
+            if (!setDataType(key)) {
+                return CommonConstants.WRONG_VALUE_TYPE;
+            }
+            Set<String> set = (Set<String>) redisMap.get(key);
+            first.removeAll(set);
+        }
+        return String.valueOf(first.size());
     }
 }

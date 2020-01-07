@@ -190,7 +190,7 @@ public class ListMethod {
             if (!Utils.isInteger(stop)) {
                 return "stop is not number";
             }
-            return String.valueOf(listDataType.lRange(key, Integer.parseInt(start), Integer.parseInt(stop)));
+            return listDataType.lRange(key, Integer.parseInt(start), Integer.parseInt(stop));
         } else {
             return CommonConstants.INVALID_PARAMS;
         }

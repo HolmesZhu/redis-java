@@ -5,9 +5,7 @@ import com.holmeszhu.constant.CommonConstants;
 import com.holmeszhu.data_type.SetDataType;
 import com.holmeszhu.util.Utils;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class SetMethod {
 
@@ -114,7 +112,7 @@ public class SetMethod {
     public String sMembers(String[] params) {
         if (params.length == 1) {
             String key = params[0];
-            return String.valueOf(setDataType.sMembers(key));
+            return setDataType.sMembers(key);
         } else {
             return CommonConstants.INVALID_PARAMS;
         }
@@ -122,7 +120,7 @@ public class SetMethod {
 
     public String sInter(String[] params) {
         if (params.length >= 1) {
-            Set<String> keys = new HashSet<>(Arrays.asList(params));
+            List<String> keys = new ArrayList<>(Arrays.asList(params));
             return String.valueOf(setDataType.sInter(keys));
         } else {
             return CommonConstants.INVALID_PARAMS;
@@ -132,7 +130,7 @@ public class SetMethod {
     public String sInterStore(String[] params) {
         if (params.length >= 2) {
             String destination = params[0];
-            Set<String> keys = new HashSet<>();
+            List<String> keys = new ArrayList<>();
             for (int i = 1; i < params.length; i++) {
                 keys.add(params[i]);
             }
@@ -144,7 +142,7 @@ public class SetMethod {
 
     public String sUnion(String[] params) {
         if (params.length >= 1) {
-            Set<String> keys = new HashSet<>(Arrays.asList(params));
+            List<String> keys = new ArrayList<>(Arrays.asList(params));
             return String.valueOf(setDataType.sUnion(keys));
         } else {
             return CommonConstants.INVALID_PARAMS;
@@ -167,7 +165,7 @@ public class SetMethod {
 
     public String sDiff(String[] params) {
         if (params.length >= 1) {
-            Set<String> keys = new HashSet<>(Arrays.asList(params));
+            List<String> keys = new ArrayList<>(Arrays.asList(params));
             return String.valueOf(setDataType.sDiff(keys));
         } else {
             return CommonConstants.INVALID_PARAMS;
@@ -177,7 +175,7 @@ public class SetMethod {
     public String sDiffStore(String[] params) {
         if (params.length >= 2) {
             String destination = params[0];
-            Set<String> keys = new HashSet<>();
+            List<String> keys = new ArrayList<>();
             for (int i = 1; i < params.length; i++) {
                 keys.add(params[i]);
             }
@@ -186,8 +184,6 @@ public class SetMethod {
             return CommonConstants.INVALID_PARAMS;
         }
     }
-
-
 
 
 }

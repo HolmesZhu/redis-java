@@ -38,7 +38,7 @@ public class ListDataType extends CommonDataType {
         if (!listDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        LinkedList<String> list = lRange(key, 0, -1);
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
         for (String value : values) {
             list.addFirst(value);
         }
@@ -60,10 +60,7 @@ public class ListDataType extends CommonDataType {
         if (!listDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        LinkedList<String> list = lRange(key, 0, -1);
-        if (list.size() == 0) {
-            return "0";
-        }
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
         list.addFirst(value);
         redisMap.put(key, list);
         return String.valueOf(list.size());
@@ -84,7 +81,7 @@ public class ListDataType extends CommonDataType {
         if (!listDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        LinkedList<String> list = lRange(key, 0, -1);
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
         list.addAll(values);
         redisMap.put(key, list);
         return String.valueOf(list.size());
@@ -104,10 +101,7 @@ public class ListDataType extends CommonDataType {
         if (!listDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        LinkedList<String> list = lRange(key, 0, -1);
-        if (list.size() == 0) {
-            return "0";
-        }
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
         list.add(value);
         redisMap.put(key, list);
         return String.valueOf(list.size());
@@ -128,8 +122,8 @@ public class ListDataType extends CommonDataType {
         if (!listDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        LinkedList<String> linkedList = lRange(key, 0, -1);
-        return String.valueOf(linkedList.size());
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
+        return String.valueOf(list.size());
     }
 
 
@@ -145,12 +139,12 @@ public class ListDataType extends CommonDataType {
         if (!listDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        LinkedList<String> list = lRange(key, 0, -1);
-        if (list.size() > 0) {
-            return list.removeFirst();
-        } else {
-            return CommonConstants.EMPTY_LIST;
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
+        String value = list.removeFirst();
+        if (list.size() == 0) {
+            del(key);
         }
+        return value;
     }
 
 
@@ -166,12 +160,12 @@ public class ListDataType extends CommonDataType {
         if (!listDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        LinkedList<String> list = lRange(key, 0, -1);
-        if (list.size() > 0) {
-            return list.removeLast();
-        } else {
-            return CommonConstants.EMPTY_LIST;
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
+        String value = list.removeLast();
+        if (list.size() == 0) {
+            del(key);
         }
+        return value;
     }
 
 
@@ -184,28 +178,24 @@ public class ListDataType extends CommonDataType {
      * 下标(index)参数 start 和 stop 都以 0 为底，也就是说，以 0 表示列表的第一个元素，以 1 表示列表的第二个元素，以此类推。
      * 你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推。
      */
-    public LinkedList<String> lRange(String key, int start, int stop) {
+    public String lRange(String key, int start, int stop) {
 
         LinkedList<String> result = new LinkedList<>();
         if (!exists(key)) {
-            return result;
+            return CommonConstants.EMPTY_LIST_OR_SET;
         }
+
         if (!listDataType(key)) {
-            return result;
+            return CommonConstants.WRONG_VALUE_TYPE;
         }
 
         // 获取存在的key
         LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
 
-        if (list.size() == 0) {
-            return list;
-        }
-
         //排除不符合的下标
         if (start >= list.size() || start < -list.size() || stop < -list.size()) {
-            return result;
+            return CommonConstants.EMPTY_LIST_OR_SET;
         }
-
 
         // 根据start的大小重置下标  譬如原来是-1 代表倒数第一个元素  列表有5个元素  下标就是4
         if (start < 0) {
@@ -219,7 +209,7 @@ public class ListDataType extends CommonDataType {
 
         //如果start下标比stop大  返回空list
         if (start > stop) {
-            return result;
+            return CommonConstants.EMPTY_LIST_OR_SET;
         }
 
         if (stop >= list.size()) {
@@ -229,7 +219,7 @@ public class ListDataType extends CommonDataType {
         for (int i = start; i <= stop; i++) {
             result.add(list.get(i));
         }
-        return result;
+        return String.valueOf(result);
 
     }
 
@@ -250,9 +240,9 @@ public class ListDataType extends CommonDataType {
 
         String value = rPop(source);
         //当source正常的时候
-        if (!value.equals(CommonConstants.EMPTY_LIST)) {
+        if (!value.equals(CommonConstants.EMPTY_LIST_OR_SET)) {
             //添加另一个参数
-            LinkedList<String> list = lRange(destination, 0, -1);
+            LinkedList<String> list = (LinkedList<String>) redisMap.get(destination);
             list.addFirst(value);
             redisMap.put(destination, list);
         }
@@ -278,7 +268,7 @@ public class ListDataType extends CommonDataType {
         if (!listDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
-        LinkedList<String> list = lRange(key, 0, -1);
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
         //计算出列表中值等于value的数量
         int num = 0;
         for (String newValue : list) {
@@ -335,7 +325,7 @@ public class ListDataType extends CommonDataType {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
 
-        LinkedList<String> list = lRange(key, 0, -1);
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
 
         //如果下标大于等于0  并且index的值小于list的大小  直接获取
         if (index >= 0 && index < list.size()) {
@@ -406,10 +396,10 @@ public class ListDataType extends CommonDataType {
             return CommonConstants.WRONG_VALUE_TYPE;
         }
 
-        LinkedList<String> list = lRange(key, 0, -1);
+        LinkedList<String> list = (LinkedList<String>) redisMap.get(key);
 
         if (list.size() == 0) {
-            return CommonConstants.EMPTY_LIST;
+            return CommonConstants.EMPTY_LIST_OR_SET;
         }
 
         if (index >= list.size()) {
