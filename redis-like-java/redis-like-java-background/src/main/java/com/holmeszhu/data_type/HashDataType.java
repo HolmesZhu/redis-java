@@ -8,7 +8,7 @@ import java.util.*;
 public class HashDataType extends CommonDataType {
 
     public boolean hashDataType(String hash) {
-        return redisMap.get(hash) instanceof Map;
+        return redisMap.get(hash) instanceof HashMap;
     }
 
     public String hSet(String hash, String field, String value) {

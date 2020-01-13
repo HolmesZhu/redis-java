@@ -5,10 +5,7 @@ import com.holmeszhu.constant.CommonConstants;
 import com.holmeszhu.data_type.HashDataType;
 import com.holmeszhu.util.Utils;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class HashMethod {
 

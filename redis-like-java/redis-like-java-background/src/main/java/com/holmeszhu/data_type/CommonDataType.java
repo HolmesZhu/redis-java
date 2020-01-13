@@ -38,7 +38,7 @@ public class CommonDataType {
             return "list";
         } else if (redisMap.get(key) instanceof Set) {
             return "set";
-        } else if (redisMap.get(key) instanceof TreeMap) {
+        } else if (redisMap.get(key) instanceof LinkedHashMap) {
             return "zset";
         } else if (redisMap.get(key) instanceof HashMap) {
             return "hash";

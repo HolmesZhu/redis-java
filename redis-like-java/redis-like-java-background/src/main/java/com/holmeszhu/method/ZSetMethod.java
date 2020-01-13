@@ -5,10 +5,7 @@ import com.holmeszhu.constant.CommonConstants;
 import com.holmeszhu.data_type.ZSetDataType;
 import com.holmeszhu.util.Utils;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ZSetMethod {
 
@@ -34,14 +31,14 @@ public class ZSetMethod {
     public String zAdd(String[] params) {
         if (params.length > 1 && params.length % 2 == 1) {
             String key = params[0];
-            Map<Double, String> map = new TreeMap<>();
+            Map<String, Double> map = new HashMap<>();
             for (int i = 1; i < params.length; i += 2) {
                 String score = params[i];
                 if (!Utils.isDouble(score)) {
                     return "store is not number";
                 }
                 String member = params[i + 1];
-                map.put(Double.parseDouble(score), member);
+                map.put(member,Double.parseDouble(score));
             }
             return zSetDataType.zAdd(key, map);
         } else {
@@ -68,7 +65,7 @@ public class ZSetMethod {
                 return "increment is not number";
             }
             String member = params[2];
-            return zSetDataType.zIncrBy(key, Integer.parseInt(increment), member);
+            return zSetDataType.zIncrBy(key, Double.parseDouble(increment), member);
         } else {
             return CommonConstants.INVALID_PARAMS;
         }
@@ -88,14 +85,14 @@ public class ZSetMethod {
         if (params.length == 3) {
             String key = params[0];
             String min = params[1];
-            if (!Utils.isInteger(min)) {
+            if (!Utils.isDouble(min)) {
                 return "min is not number";
             }
             String max = params[2];
-            if (!Utils.isInteger(max)) {
+            if (!Utils.isDouble(max)) {
                 return "max is not number";
             }
-            return zSetDataType.zCount(key, Integer.parseInt(min), Integer.parseInt(max));
+            return zSetDataType.zCount(key, Double.parseDouble(min), Double.parseDouble(max));
         } else {
             return CommonConstants.INVALID_PARAMS;
         }
