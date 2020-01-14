@@ -131,31 +131,64 @@ public class ZSetMethod {
         }
     }
 
+    public String zRevRange(String[] params) {
+        if (params.length == 3) {
+            String key = params[0];
+            String start = params[1];
+            if (!Utils.isInteger(start)) {
+                return "start is not number";
+            }
+            String stop = params[2];
+            if (!Utils.isInteger(stop)) {
+                return "stop is not number";
+            }
+            return zSetDataType.zRevRange(key, Integer.parseInt(start), Integer.parseInt(stop));
+        } else if (params.length == 4) {
+            String key = params[0];
+            String start = params[1];
+            if (!Utils.isInteger(start)) {
+                return "start is not number";
+            }
+            String stop = params[2];
+            if (!Utils.isInteger(stop)) {
+                return "stop is not number";
+            }
+            String param = params[3];
+            if (param.toLowerCase().equals("withscores")) {
+                return zSetDataType.zRevRangeWithScores(key, Integer.parseInt(start), Integer.parseInt(stop));
+            } else {
+                return "withscores is wrong";
+            }
+        } else {
+            return CommonConstants.INVALID_PARAMS;
+        }
+    }
+
     public String zRangeByScore(String[] params) {
         if (params.length == 3) {
             String key = params[0];
             String min = params[1];
-            if (!Utils.isInteger(min)) {
+            if (!Utils.isDouble(min)) {
                 return "min is not number";
             }
             String max = params[2];
-            if (!Utils.isInteger(max)) {
+            if (!Utils.isDouble(max)) {
                 return "max is not number";
             }
-            return zSetDataType.zRangeByScore(key, Integer.parseInt(min), Integer.parseInt(max));
+            return zSetDataType.zRangeByScore(key, Double.parseDouble(min), Double.parseDouble(max));
         } else if (params.length == 4) {
             String key = params[0];
             String min = params[1];
-            if (!Utils.isInteger(min)) {
+            if (!Utils.isDouble(min)) {
                 return "start is not number";
             }
             String max = params[2];
-            if (!Utils.isInteger(max)) {
+            if (!Utils.isDouble(max)) {
                 return "max is not number";
             }
             String param = params[3];
             if (param.toLowerCase().equals("withscores")) {
-                return zSetDataType.zRangeByScoreWithScores(key, Integer.parseInt(min), Integer.parseInt(max));
+                return zSetDataType.zRangeByScoreWithScores(key, Double.parseDouble(min), Double.parseDouble(max));
             } else {
                 return "withscores is wrong";
             }
@@ -172,27 +205,27 @@ public class ZSetMethod {
         if (params.length == 3) {
             String key = params[0];
             String min = params[1];
-            if (!Utils.isInteger(min)) {
+            if (!Utils.isDouble(min)) {
                 return "min is not number";
             }
             String max = params[2];
-            if (!Utils.isInteger(max)) {
+            if (!Utils.isDouble(max)) {
                 return "max is not number";
             }
-            return zSetDataType.zRevRangeByScore(key, Integer.parseInt(min), Integer.parseInt(max));
+            return zSetDataType.zRevRangeByScore(key, Double.parseDouble(min), Double.parseDouble(max));
         } else if (params.length == 4) {
             String key = params[0];
             String min = params[1];
-            if (!Utils.isInteger(min)) {
+            if (!Utils.isDouble(min)) {
                 return "min is not number";
             }
             String max = params[2];
-            if (!Utils.isInteger(max)) {
+            if (!Utils.isDouble(max)) {
                 return "max is not number";
             }
             String param = params[3];
             if (param.toLowerCase().equals("withscores")) {
-                return zSetDataType.zRevRangeByScoreWithScores(key, Integer.parseInt(min), Integer.parseInt(max));
+                return zSetDataType.zRevRangeByScoreWithScores(key, Double.parseDouble(min), Double.parseDouble(max));
             } else {
                 return "withscores is wrong";
             }

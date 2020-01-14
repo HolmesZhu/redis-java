@@ -136,7 +136,7 @@ public class ZSetDataType extends CommonDataType {
 
     public String zRange(String key, int start, int stop) {
         if (!exists(key)) {
-            return "0";
+            return CommonConstants.EMPTY_LIST_OR_SET;
         }
         if (!zSetDataType(key)) {
             return CommonConstants.WRONG_VALUE_TYPE;
@@ -165,7 +165,47 @@ public class ZSetDataType extends CommonDataType {
             stop = len - 1;
         }
         List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
-        // Get the i'th term
+
+        List<String> list = new ArrayList<>();
+        for (int i = start; i <= stop; i++) {
+            Map.Entry<String, Double> entry = indexedList.get(i);
+            list.add(entry.getKey());
+        }
+        return String.valueOf(list);
+    }
+
+    public String zRangeWithScores(String key, int start, int stop) {
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        int len = memberScoreMap.size();
+        if (start < 0) {
+            start = start + len;
+        }
+        if (start < 0) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (stop < 0) {
+            stop = stop + len;
+        }
+        if (stop < 0) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (start > stop) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (start > len - 1) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (stop >= len) {
+            stop = len - 1;
+        }
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+
         Map<String, Double> map = new LinkedHashMap<>();
         for (int i = start; i <= stop; i++) {
             Map.Entry<String, Double> entry = indexedList.get(i);
@@ -174,43 +214,217 @@ public class ZSetDataType extends CommonDataType {
         return String.valueOf(map);
     }
 
-    public String zRangeWithScores(String key, int start, int stop) {
-        return "";
-    }
-
     public String zRevRange(String key, int start, int stop) {
-        return "";
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        int len = memberScoreMap.size();
+        if (start < 0) {
+            start = start + len;
+        }
+        if (start < 0) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (stop < 0) {
+            stop = stop + len;
+        }
+        if (stop < 0) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (start > stop) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (start > len - 1) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (stop >= len) {
+            stop = len - 1;
+        }
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+
+        List<String> list = new ArrayList<>();
+        for (int i = stop; i >= start; i++) {
+            Map.Entry<String, Double> entry = indexedList.get(i);
+            list.add(entry.getKey());
+        }
+        return String.valueOf(list);
     }
 
     public String zRevRangeWithScores(String key, int start, int stop) {
-        return "";
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        int len = memberScoreMap.size();
+        if (start < 0) {
+            start = start + len;
+        }
+        if (start < 0) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (stop < 0) {
+            stop = stop + len;
+        }
+        if (stop < 0) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (start > stop) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (start > len - 1) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (stop >= len) {
+            stop = len - 1;
+        }
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+
+        Map<String, Double> map = new LinkedHashMap<>();
+        for (int i = start; i <= stop; i++) {
+            Map.Entry<String, Double> entry = indexedList.get(i);
+            map.put(entry.getKey(), entry.getValue());
+        }
+        return String.valueOf(map);
     }
 
-    public String zRangeByScore(String key, int min, int max) {
-        return "";
+    public String zRangeByScore(String key, double min, double max) {
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        List<Double> list = (List<Double>) memberScoreMap.values();
+        Double[] a = list.toArray(new Double[0]);
+        int left = findBoundaryLeft(0, a.length - 1, a, min);
+        int right = findBoundaryRight(0, a.length - 1, a, max);
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+        List<String> members = new ArrayList<>();
+        for (int i = left; i <= right; i++) {
+            members.add(indexedList.get(i).getKey());
+        }
+        return String.valueOf(members);
     }
 
-    public String zRangeByScoreWithScores(String key, int min, int max) {
-        return "";
+    public String zRangeByScoreWithScores(String key, double min, double max) {
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        List<Double> list = (List<Double>) memberScoreMap.values();
+        Double[] a = list.toArray(new Double[0]);
+        int left = findBoundaryLeft(0, a.length - 1, a, min);
+        int right = findBoundaryRight(0, a.length - 1, a, max);
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+        Map<String, Double> result = new LinkedHashMap();
+        for (int i = left; i <= right; i++) {
+            result.put(indexedList.get(i).getKey(), indexedList.get(i).getValue());
+        }
+        return String.valueOf(result);
     }
 
-    public String zRevRangeByScore(String key, int min, int max) {
-        return "";
+    public String zRevRangeByScore(String key, double min, double max) {
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        List<Double> list = (List<Double>) memberScoreMap.values();
+        Double[] a = list.toArray(new Double[0]);
+        int left = findBoundaryLeft(0, a.length - 1, a, min);
+        int right = findBoundaryRight(0, a.length - 1, a, max);
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+        List<String> members = new ArrayList<>();
+        for (int i = right; i >= left; i++) {
+            members.add(indexedList.get(i).getKey());
+        }
+        return String.valueOf(members);
     }
 
-    public String zRevRangeByScoreWithScores(String key, int min, int max) {
-        return "";
+    public String zRevRangeByScoreWithScores(String key, double min, double max) {
+        if (!exists(key)) {
+            return CommonConstants.EMPTY_LIST_OR_SET;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        List<Double> list = (List<Double>) memberScoreMap.values();
+        Double[] a = list.toArray(new Double[0]);
+        int left = findBoundaryLeft(0, a.length - 1, a, min);
+        int right = findBoundaryRight(0, a.length - 1, a, max);
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+        Map<String, Double> result = new LinkedHashMap();
+        for (int i = right; i >= left; i++) {
+            result.put(indexedList.get(i).getKey(), indexedList.get(i).getValue());
+        }
+        return String.valueOf(result);
     }
 
     public String zRank(String key, String member) {
-        return "";
+        if (!exists(key)) {
+            return null;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        if (memberScoreMap.get(member) == null) {
+            return null;
+        }
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+        for (int i = 0; i < indexedList.size(); i++) {
+            if (indexedList.get(i).getKey().equals(member)) {
+                return String.valueOf(i);
+            }
+        }
+        return "0";
     }
 
     public String zRevRank(String key, String member) {
-        return "";
+        if (!exists(key)) {
+            return null;
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+        if (memberScoreMap.get(member) == null) {
+            return null;
+        }
+        List<Map.Entry<String, Double>> indexedList = new ArrayList<>(memberScoreMap.entrySet());
+        for (int i = 0; i < indexedList.size(); i++) {
+            if (indexedList.get(i).getKey().equals(member)) {
+                return String.valueOf(indexedList.size() - 1 - i);
+            }
+        }
+        return "0";
     }
 
+
     public String zRem(String key, Set<String> members) {
+        if (!exists(key)) {
+            return "0";
+        }
+        if (!zSetDataType(key)) {
+            return CommonConstants.WRONG_VALUE_TYPE;
+        }
+        Map<String, Double> memberScoreMap = (Map<String, Double>) redisMap.get(key);
+
+
         return "";
     }
 
